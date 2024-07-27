@@ -12,6 +12,8 @@ import { Strategy as LocalStrategy } from "passport-local";
 import bcrypt from "bcryptjs";
 import { PrismaClient } from "@prisma/client";
 import { body, validationResult } from "express-validator";
+import { Server } from "socket.io";
+import http from "http";
 
 // Initialize Prisma Client
 const prisma = new PrismaClient();
@@ -22,6 +24,9 @@ dotenv.config();
 // Initialize Express
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+const server = http.createServer(app); // Create an HTTP server
+const io = new Server(server); // Attach socket.io to the HTTP server
 
 // Middleware
 app.use(cors());
@@ -37,6 +42,64 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
+
+// Socket.io setup
+io.on("connection", (socket) => {
+  console.log(`User connected: ${socket.id}`);
+
+  // Handle message sending
+  socket.on("sendMessage", async ({ senderUsername, receiverUsername, message }) => {
+    try {
+      // Check if the sender and receiver exist
+      const sender = await prisma.user.findUnique({ where: { username: senderUsername } });
+      const receiver = await prisma.user.findUnique({ where: { username: receiverUsername } });
+
+      if (!sender) {
+        socket.emit("sendMessageError", { message: "Sender username does not exist." });
+        return;
+      }
+
+      if (!receiver) {
+        socket.emit("sendMessageError", { message: "Receiver username does not exist." });
+        return;
+      }
+
+      // Create a new message in the database
+      const newMessage = await prisma.message.create({
+        data: {
+          content: message,
+          senderId: sender.id,
+          receiverId: receiver.id,
+        },
+        include: {
+          sender: true,
+          receiver: true,
+        },
+      });
+
+      // Ensure sender and receiver details are included in the emitted message
+      const messageWithUsernames = {
+        id: newMessage.id,
+        content: newMessage.content,
+        senderUsername: sender.username,
+        receiverUsername: receiver.username,
+        createdAt: newMessage.createdAt,
+      };
+
+      // Emit the message with usernames to the receiver and sender
+      io.to(receiver.id).emit("receiveMessage", messageWithUsernames);
+      io.to(sender.id).emit("receiveMessage", messageWithUsernames);
+    } catch (error) {
+      console.error("Error sending message:", error);
+      socket.emit("sendMessageError", { message: "Internal server error." });
+    }
+  });
+
+  // Handle disconnect
+  socket.on("disconnect", () => {
+    console.log(`User disconnected: ${socket.id}`);
+  });
+});
 
 // Passport Configuration
 passport.use(
@@ -155,8 +218,8 @@ app.get("/api/user/:userId", async (req, res) => {
   const { userId } = req.params;
   try {
     const user = await prisma.user.findUnique({
-      where: { id: Number(userId) },
-      select: { id: true, username: true, email: true },
+      where: { id: userId },
+      select: { id: true, username: true, email: true, receivedMessages: true },
     });
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -164,6 +227,64 @@ app.get("/api/user/:userId", async (req, res) => {
     res.json({ user });
   } catch (error) {
     console.error("Error fetching user data:", error);
+    res.status(500).json({ message: "Internal server error", error: error.message });
+  }
+});
+
+// Fetching messages route
+app.get("/api/messages/:username", async (req, res) => {
+  const { username } = req.params;
+  try {
+    const user = await prisma.user.findUnique({ where: { username } });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const messages = await prisma.message.findMany({
+      where: {
+        OR: [{ senderId: user.id }, { receiverId: user.id }],
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    res.json({ messages });
+  } catch (error) {
+    console.error("Error fetching messages:", error);
+    res.status(500).json({ message: "Internal server error", error: error.message });
+  }
+});
+
+// Add this route for sending messages
+app.post("/api/messages/send", async (req, res) => {
+  const { senderUsername, receiverUsername, message } = req.body;
+
+  try {
+    // Find the sender and receiver by username
+    const sender = await prisma.user.findUnique({ where: { username: senderUsername } });
+    const receiver = await prisma.user.findUnique({ where: { username: receiverUsername } });
+
+    if (!sender || !receiver) {
+      return res.status(400).json({ message: "Invalid sender or receiver username" });
+    }
+
+    // Create a new message in the database
+    const newMessage = await prisma.message.create({
+      data: {
+        content: message,
+        senderId: sender.id,
+        receiverId: receiver.id,
+      },
+    });
+
+    // Emit the new message to the receiver's socket
+    io.to(receiver.id).emit("receiveMessage", newMessage);
+
+    res.status(200).json({ message: "Message sent successfully" });
+  } catch (error) {
+    console.error("Error sending message:", error);
     res.status(500).json({ message: "Internal server error", error: error.message });
   }
 });
@@ -179,6 +300,6 @@ app.get("*", (req, res) => {
 });
 
 // Start the server
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });

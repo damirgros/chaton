@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import ChatComponent from "./ChatComponent";
 
 interface User {
   id: number;
@@ -11,7 +12,7 @@ interface User {
 const UserProfile: React.FC = () => {
   const { userId } = useParams<{ userId: string }>();
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
@@ -28,7 +29,7 @@ const UserProfile: React.FC = () => {
         setUser(response.data.user);
       } catch (err) {
         setError("Failed to fetch user data");
-        console.error(err); // Log error to console
+        console.error(err);
       } finally {
         setLoading(false);
       }
@@ -40,9 +41,10 @@ const UserProfile: React.FC = () => {
   const handleLogout = async () => {
     try {
       await axios.get("/api/auth/logout");
-      navigate("/login"); // Redirect to login page or home page
+      navigate("/");
     } catch (err) {
-      console.error("Failed to log out");
+      console.error("Failed to log out", err);
+      setError("Failed to log out");
     }
   };
 
@@ -56,13 +58,16 @@ const UserProfile: React.FC = () => {
       <div className="profile-info">
         <p>Username: {user?.username}</p>
         <p>Email: {user?.email}</p>
-        {/* Add more profile details as needed */}
       </div>
       <div className="posts">
-        {/* Example posts */}
         <div className="post">Post 1</div>
         <div className="post">Post 2</div>
       </div>
+      {user && user.username && (
+        <div>
+          <ChatComponent userUsername={user.username} />
+        </div>
+      )}
       <button onClick={handleLogout}>Logout</button>
     </div>
   );
