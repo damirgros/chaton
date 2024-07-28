@@ -24,7 +24,6 @@ const ChatComponent: React.FC<ChatComponentProps> = ({ userUsername }) => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Fetch initial messages for the user from the server
     const fetchMessages = async () => {
       try {
         const response = await axios.get(`/api/messages/${userUsername}`);
@@ -39,17 +38,14 @@ const ChatComponent: React.FC<ChatComponentProps> = ({ userUsername }) => {
 
     fetchMessages();
 
-    // Listen for incoming messages
-    socket.on("receiveMessage", (newMessage: Message) => {
+    socket.on("receiveMessage", (newMessage) => {
       setMessages((prev) => [...prev, newMessage]);
     });
 
-    // Listen for sendMessageError
-    socket.on("sendMessageError", ({ message }: { message: string }) => {
+    socket.on("sendMessageError", ({ message }) => {
       alert(message);
     });
 
-    // Cleanup the listener on component unmount
     return () => {
       socket.off("receiveMessage");
       socket.off("sendMessageError");

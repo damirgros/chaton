@@ -2,10 +2,10 @@
 
 import React from "react";
 import { Routes, Route } from "react-router-dom";
-import HomePage from "./HomePage";
-import UserProfile from "./UserProfile";
-import Login from "./Login";
-import Register from "./Register";
+import HomePage from "./pages/HomePage";
+import Login from "./components/Login";
+import Register from "./components/Register";
+import UserPage from "./pages/UserPage";
 
 const App: React.FC = () => {
   return (
@@ -13,7 +13,7 @@ const App: React.FC = () => {
       <Route path="/" element={<HomePage />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
-      <Route path="/user/:userId" element={<UserProfile />} />
+      <Route path="/user/:userId" element={<UserPage />} />
     </Routes>
   );
 };
