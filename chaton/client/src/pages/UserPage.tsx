@@ -5,23 +5,7 @@ import Posts from "../components/Posts";
 import MyPosts from "../components/MyPosts";
 import ChatComponent from "../components/Chat";
 import Profile from "../components/Profile";
-
-interface User {
-  id: string;
-  username: string;
-  email: string;
-}
-
-interface Post {
-  id: string;
-  title: string;
-  content: string;
-  createdAt: string;
-  author: {
-    id: string;
-    username: string;
-  };
-}
+import { Post, User } from "../types/types";
 
 const UserPage: React.FC = () => {
   const { userId } = useParams<{ userId: string }>();
@@ -57,7 +41,7 @@ const UserPage: React.FC = () => {
   }, [userId]);
 
   const handlePostCreated = (newPost: Post) => {
-    setPosts([newPost, ...posts]);
+    setPosts((prevPosts) => [newPost, ...prevPosts]);
   };
 
   const handlePostDeleted = (postId: string) => {
@@ -89,10 +73,11 @@ const UserPage: React.FC = () => {
       </div>
 
       {activeSection === "posts" && <Posts posts={posts} currentUser={user?.id || null} />}
-      {activeSection === "myPosts" && (
+      {activeSection === "myPosts" && user && (
         <MyPosts
           posts={posts}
-          currentUser={user?.id || null}
+          currentUser={user.id}
+          username={user.username}
           onPostCreated={handlePostCreated}
           onDelete={handlePostDeleted}
           editingPost={editingPost}

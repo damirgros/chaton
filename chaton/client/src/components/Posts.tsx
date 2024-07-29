@@ -1,20 +1,5 @@
 import React from "react";
-
-interface Post {
-  id: string;
-  title: string;
-  content: string;
-  createdAt: string;
-  author: {
-    id: string;
-    username: string;
-  };
-}
-
-interface PostsProps {
-  posts: Post[];
-  currentUser: string | null;
-}
+import { PostsProps } from "../types/types";
 
 const Posts: React.FC<PostsProps> = ({ posts, currentUser }) => (
   <div className="posts">

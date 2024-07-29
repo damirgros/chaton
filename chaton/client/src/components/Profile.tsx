@@ -1,8 +1,5 @@
 import React from "react";
-
-interface ProfileProps {
-  user: { username: string; email: string };
-}
+import { ProfileProps } from "../types/types";
 
 const Profile: React.FC<ProfileProps> = ({ user }) => (
   <div className="profile">

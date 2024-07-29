@@ -23,5 +23,5 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src/pages", "src/components"]
+  "include": ["src/pages", "src/components", "src/types"]
 }

@@ -1,10 +1,7 @@
-// HomePage.tsx
-
 import React, { useState } from "react";
 import Login from "../components/Login";
 import Register from "../components/Register";
-
-interface HomePageProps {}
+import { HomePageProps } from "../types/types";
 
 const HomePage: React.FC<HomePageProps> = () => {
   const [isLogin, setIsLogin] = useState(true);

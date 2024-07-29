@@ -1,27 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import CreatePost from "./CreatePost";
 import axios from "axios";
-
-interface Post {
-  id: string;
-  title: string;
-  content: string;
-  createdAt: string;
-  author: {
-    id: string;
-    username: string;
-  };
-}
-
-interface MyPostsProps {
-  posts: Post[];
-  currentUser: string | null;
-  onPostCreated: (newPost: Post) => void;
-  onDelete: (postId: string) => void;
-  editingPost: Post | null;
-  setEditingPost: React.Dispatch<React.SetStateAction<Post | null>>;
-  setPosts: React.Dispatch<React.SetStateAction<Post[]>>;
-}
+import { Post, MyPostsProps } from "../types/types";
 
 const MyPosts: React.FC<MyPostsProps> = ({
   posts,
@@ -31,50 +11,52 @@ const MyPosts: React.FC<MyPostsProps> = ({
   editingPost,
   setEditingPost,
   setPosts,
+  username,
 }) => {
-  if (!currentUser) {
-    return <p>Error: User not logged in.</p>;
-  }
+  const [editTitle, setEditTitle] = useState<string>("");
+  const [editContent, setEditContent] = useState<string>("");
 
-  const myPosts = posts.filter((post) => post.author?.id === currentUser);
+  const myPosts = posts.filter((post) => post.author.id === currentUser);
 
-  const handleDelete = async (postId: string) => {
-    try {
-      await axios.delete(`/api/posts/${postId}`);
-      onDelete(postId);
-    } catch (error) {
-      console.error("Error deleting post:", error);
-    }
+  const handleDelete = (postId: string) => {
+    axios
+      .delete(`/api/posts/${postId}`)
+      .then(() => {
+        onDelete(postId);
+      })
+      .catch((error) => {
+        console.error("Error deleting post:", error);
+      });
   };
 
   const handleSaveEdit = async () => {
-    if (editingPost) {
-      try {
-        // Optimistically update UI
-        setPosts((prevPosts) =>
-          prevPosts.map((post) => (post.id === editingPost.id ? { ...post, ...editingPost } : post))
-        );
+    if (!editingPost) return;
 
-        // Update the post on the server
-        const response = await axios.put(`/api/posts/${editingPost.id}`, {
-          title: editingPost.title,
-          content: editingPost.content,
-        });
+    // Optimistically update the UI
+    setPosts((prevPosts) =>
+      prevPosts.map((post) =>
+        post.id === editingPost.id ? { ...post, title: editTitle, content: editContent } : post
+      )
+    );
 
-        // Update the local state with the updated post
-        setPosts((prevPosts) =>
-          prevPosts.map((post) => (post.id === editingPost.id ? response.data : post))
-        );
-        setEditingPost(null);
-      } catch (error) {
-        console.error("Error updating post:", error);
-      }
+    // Clear the editing state
+    setEditingPost(null);
+
+    try {
+      // Update the post in the database
+      await axios.put<{ post: Post }>(`/api/posts/${editingPost.id}`, {
+        title: editTitle,
+        content: editContent,
+      });
+    } catch (error) {
+      console.error("Error updating post:", error);
+      alert("Issue with the database. Try again, please.");
     }
   };
 
   return (
     <div className="my-posts">
-      <CreatePost userId={currentUser} onPostCreated={onPostCreated} />
+      <CreatePost userId={currentUser} username={username} onPostCreated={onPostCreated} />
       {myPosts.length === 0 ? (
         <p>No posts available</p>
       ) : (
@@ -84,13 +66,10 @@ const MyPosts: React.FC<MyPostsProps> = ({
               <div>
                 <input
                   type="text"
-                  value={editingPost.title}
-                  onChange={(e) => setEditingPost({ ...editingPost, title: e.target.value })}
+                  value={editTitle}
+                  onChange={(e) => setEditTitle(e.target.value)}
                 />
-                <textarea
-                  value={editingPost.content}
-                  onChange={(e) => setEditingPost({ ...editingPost, content: e.target.value })}
-                />
+                <textarea value={editContent} onChange={(e) => setEditContent(e.target.value)} />
                 <button onClick={handleSaveEdit}>Save</button>
                 <button onClick={() => setEditingPost(null)}>Cancel</button>
               </div>
@@ -98,7 +77,15 @@ const MyPosts: React.FC<MyPostsProps> = ({
               <>
                 <h3>{post.title}</h3>
                 <p>{post.content}</p>
-                <button onClick={() => setEditingPost(post)}>Edit</button>
+                <button
+                  onClick={() => {
+                    setEditingPost(post);
+                    setEditTitle(post.title);
+                    setEditContent(post.content);
+                  }}
+                >
+                  Edit
+                </button>
                 <button onClick={() => handleDelete(post.id)}>Delete</button>
               </>
             )}
