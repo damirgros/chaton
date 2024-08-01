@@ -3,32 +3,39 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export const fetchMessages = async (req, res) => {
-  const { username } = req.params;
+  const { username1, username2 } = req.params;
   try {
-    const user = await prisma.user.findUnique({ where: { username } });
+    const [user1, user2] = await prisma.user.findMany({
+      where: {
+        username: { in: [username1, username2] },
+      },
+    });
 
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
+    if (!user1 || !user2) {
+      return res.status(404).json({ message: "One or both users not found" });
     }
 
     const messages = await prisma.message.findMany({
       where: {
-        OR: [{ senderId: user.id }, { receiverId: user.id }],
+        OR: [
+          { senderId: user1.id, receiverId: user2.id },
+          { senderId: user2.id, receiverId: user1.id },
+        ],
       },
       orderBy: {
         createdAt: "desc",
       },
       include: {
-        sender: true, // Include sender details
-        receiver: true, // Include receiver details
+        sender: true,
+        receiver: true,
       },
     });
 
     const formattedMessages = messages.map((msg) => ({
       id: msg.id,
       content: msg.content,
-      senderUsername: msg.sender.username, // Extract sender's username
-      receiverUsername: msg.receiver.username, // Extract receiver's username
+      senderUsername: msg.sender.username,
+      receiverUsername: msg.receiver.username,
       createdAt: msg.createdAt,
     }));
 
@@ -43,8 +50,11 @@ export const sendMessage = async (req, res) => {
   const { senderUsername, receiverUsername, message } = req.body;
 
   try {
-    const sender = await prisma.user.findUnique({ where: { username: senderUsername } });
-    const receiver = await prisma.user.findUnique({ where: { username: receiverUsername } });
+    const [sender, receiver] = await prisma.user.findMany({
+      where: {
+        username: { in: [senderUsername, receiverUsername] },
+      },
+    });
 
     if (!sender || !receiver) {
       return res.status(400).json({ message: "Invalid sender or receiver username" });
@@ -59,11 +69,50 @@ export const sendMessage = async (req, res) => {
     });
 
     // Emit the new message to the receiver's socket
-    io.to(receiver.id).emit("receiveMessage", newMessage);
+    io.to(receiver.id).emit("receiveMessage", {
+      id: newMessage.id,
+      content: newMessage.content,
+      senderUsername: sender.username,
+      receiverUsername: receiver.username,
+      createdAt: newMessage.createdAt,
+    });
 
     res.status(200).json({ message: "Message sent successfully" });
   } catch (error) {
     console.error("Error sending message:", error);
+    res.status(500).json({ message: "Internal server error", error: error.message });
+  }
+};
+
+export const getUsersWithMessageHistory = async (req, res) => {
+  const { username } = req.params;
+
+  try {
+    const user = await prisma.user.findUnique({ where: { username } });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Get users with whom the current user has exchanged messages
+    const users = await prisma.user.findMany({
+      where: {
+        OR: [
+          { messagesReceived: { some: { senderId: user.id } } },
+          { messagesSent: { some: { receiverId: user.id } } },
+        ],
+      },
+    });
+
+    // Format the response to only include necessary user information
+    const formattedUsers = users.map((u) => ({
+      id: u.id,
+      username: u.username,
+    }));
+
+    res.json({ users: formattedUsers });
+  } catch (error) {
+    console.error("Error fetching users with history:", error);
     res.status(500).json({ message: "Internal server error", error: error.message });
   }
 };

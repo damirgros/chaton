@@ -8,18 +8,20 @@ datasource db {
 }
 
 model User {
-  id              String    @id @default(uuid())
-  email           String    @unique
-  username        String    @unique
-  password        String
-  profilePicture  String?
-  bio             String?
-  location        String?
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-  posts           Post[]
-  sentMessages    Message[] @relation("SentMessages")
-  receivedMessages Message[] @relation("ReceivedMessages")
+  id                String        @id @default(uuid())
+  email             String        @unique
+  username          String        @unique
+  password          String
+  profilePicture    String?
+  bio               String?
+  location          String?
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+  posts             Post[]
+  sentMessages      Message[]     @relation("SentMessages")
+  receivedMessages  Message[]     @relation("ReceivedMessages")
+  followers Follows[] @relation("following")
+  following Follows[] @relation("follower")
 }
 
 model Post {
@@ -41,4 +43,13 @@ model Message {
   receiverId   String
   sender       User     @relation("SentMessages", fields: [senderId], references: [id])
   receiver     User     @relation("ReceivedMessages", fields: [receiverId], references: [id])
+}
+
+model Follows {
+  follower    User @relation("follower", fields: [followerId], references: [id])
+  followerId  String
+  following   User @relation("following", fields: [followingId], references: [id])
+  followingId String
+
+  @@id([followerId, followingId])
 }

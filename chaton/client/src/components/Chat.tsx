@@ -1,117 +1,156 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import io from "socket.io-client";
-import { Message, ChatComponentProps } from "../types/types";
+import { Message, ChatComponentProps, User } from "../types/types";
 
 const socket = io("http://localhost:5000");
 
-const ChatComponent: React.FC<ChatComponentProps> = ({ userUsername }) => {
+const ChatComponent: React.FC<ChatComponentProps> = ({ userUsername, userId }) => {
   const [message, setMessage] = useState<string>("");
-  const [recipientUsername, setRecipientUsername] = useState<string>("");
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
+  const [followedUsers, setFollowedUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchMessages = async () => {
+    // Fetch followed users
+    const fetchFollowedUsers = async () => {
       try {
-        const response = await axios.get(`/api/messages/${userUsername}`);
-        setMessages(response.data.messages);
+        setLoading(true);
+        const response = await axios.get<{ users: User[] }>(`/api/user/${userId}/followed`);
+        console.log("Fetched followed users:", response.data.users);
+        setFollowedUsers(response.data.users);
       } catch (err) {
-        console.error("Failed to fetch messages:", err);
-        setError("Failed to fetch messages");
+        console.error("Failed to fetch followed users:", err);
+        setError("Failed to fetch followed users");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchMessages();
+    fetchFollowedUsers();
 
+    // Set up socket listeners
     socket.on("receiveMessage", (newMessage) => {
-      setMessages((prev) => [...prev, newMessage]);
-    });
-
-    socket.on("sendMessageError", ({ message }) => {
-      alert(message);
+      if (
+        newMessage.senderUsername === selectedUser?.username ||
+        newMessage.receiverUsername === userUsername
+      ) {
+        setMessages((prev) => [...prev, newMessage]);
+      }
     });
 
     return () => {
       socket.off("receiveMessage");
-      socket.off("sendMessageError");
     };
-  }, [userUsername]);
+  }, [userUsername, selectedUser?.username]);
+
+  const fetchMessages = async (recipientUsername: string) => {
+    try {
+      setLoading(true);
+      const response = await axios.get(`/api/messages/${userUsername}/${recipientUsername}`);
+      setMessages(response.data.messages || []);
+    } catch (err) {
+      console.error("Failed to fetch messages:", err);
+      setError("Failed to fetch messages");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleUserClick = (user: User) => {
+    setSelectedUser(user);
+    fetchMessages(user.username);
+  };
 
   const sendMessage = async () => {
-    if (!message || !recipientUsername) {
-      alert("Please enter both a recipient username and a message.");
+    if (!message || !selectedUser) {
+      alert("Please enter a message and select a user.");
       return;
     }
 
     try {
-      // Send the message to the server
       await axios.post("/api/messages/send", {
         senderUsername: userUsername,
-        receiverUsername: recipientUsername,
+        receiverUsername: selectedUser.username,
         message,
       });
 
-      // Emit the message to the socket
       socket.emit("sendMessage", {
         senderUsername: userUsername,
-        receiverUsername: recipientUsername,
+        receiverUsername: selectedUser.username,
         message,
       });
 
-      setMessage(""); // Clear message input field
+      setMessage("");
     } catch (e) {
       console.log((e as Error).message);
     }
   };
 
-  if (loading) return <p>Loading messages...</p>;
+  if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
 
   return (
-    <div>
-      <h2>Chat</h2>
-      <div>
-        <h3>Messages</h3>
-        {messages.length > 0 ? (
-          messages.map((msg) => (
-            <div key={msg.id} className="message">
-              <p>
-                <strong>From:</strong> {msg.senderUsername}
-              </p>
-              <p>
-                <strong>To:</strong> {msg.receiverUsername}
-              </p>
-              <p>
-                <strong>Message:</strong> {msg.content}
-              </p>
-              <p>
-                <strong>Received At:</strong> {new Date(msg.createdAt).toLocaleString()}
-              </p>
-            </div>
-          ))
-        ) : (
-          <p>No messages found</p>
-        )}
+    <div style={{ display: "flex", height: "100vh" }}>
+      <div style={{ width: "30%", borderRight: "1px solid #ccc", overflowY: "auto" }}>
+        <h3>Followed Users</h3>
+        <ul>
+          {followedUsers.length > 0 ? (
+            followedUsers.map((user) => (
+              <li
+                key={user.id}
+                onClick={() => handleUserClick(user)}
+                style={{ cursor: "pointer", padding: "10px", borderBottom: "1px solid #eee" }}
+              >
+                {user.username}
+              </li>
+            ))
+          ) : (
+            <p>No followed users found</p>
+          )}
+        </ul>
       </div>
-      <div>
-        <input
-          type="text"
-          placeholder="Recipient Username"
-          value={recipientUsername}
-          onChange={(e) => setRecipientUsername(e.target.value)}
-        />
-        <br />
-        <textarea
-          placeholder="Enter your message"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-        />
-        <br />
-        <button onClick={sendMessage}>Send</button>
+      <div style={{ width: "70%", padding: "10px" }}>
+        {selectedUser ? (
+          <>
+            <h3>Conversation with {selectedUser.username}</h3>
+            <div style={{ maxHeight: "70vh", overflowY: "auto" }}>
+              {messages.length > 0 ? (
+                messages.map((msg) => (
+                  <div
+                    key={msg.id}
+                    className="message"
+                    style={{ padding: "10px", borderBottom: "1px solid #eee" }}
+                  >
+                    <p>
+                      <strong>{msg.senderUsername}:</strong> {msg.content}
+                    </p>
+                    <p>
+                      <small>{new Date(msg.createdAt).toLocaleString()}</small>
+                    </p>
+                  </div>
+                ))
+              ) : (
+                <p>No messages found</p>
+              )}
+            </div>
+            <div>
+              <textarea
+                placeholder="Enter your message"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                style={{ width: "100%", height: "100px", marginTop: "10px" }}
+              />
+              <button onClick={sendMessage} style={{ marginTop: "10px" }}>
+                Send
+              </button>
+            </div>
+          </>
+        ) : (
+          <p>Select a user to start chatting</p>
+        )}
       </div>
     </div>
   );

@@ -1,3 +1,4 @@
+// UserPage.tsx
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -5,6 +6,7 @@ import Posts from "../components/Posts";
 import MyPosts from "../components/MyPosts";
 import ChatComponent from "../components/Chat";
 import Profile from "../components/Profile";
+import Follow from "../components/Follow";
 import { Post, User } from "../types/types";
 
 const UserPage: React.FC = () => {
@@ -14,9 +16,9 @@ const UserPage: React.FC = () => {
   const [editingPost, setEditingPost] = useState<Post | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [activeSection, setActiveSection] = useState<"posts" | "myPosts" | "chat" | "profile">(
-    "posts"
-  );
+  const [activeSection, setActiveSection] = useState<
+    "posts" | "myPosts" | "chat" | "profile" | "follow"
+  >("posts");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -70,6 +72,7 @@ const UserPage: React.FC = () => {
         <button onClick={() => setActiveSection("myPosts")}>My Posts</button>
         <button onClick={() => setActiveSection("chat")}>Chat</button>
         <button onClick={() => setActiveSection("profile")}>Profile</button>
+        <button onClick={() => setActiveSection("follow")}>Follow</button>
       </div>
 
       {activeSection === "posts" && <Posts posts={posts} currentUser={user?.id || null} />}
@@ -85,8 +88,11 @@ const UserPage: React.FC = () => {
           setPosts={setPosts}
         />
       )}
-      {activeSection === "chat" && user && <ChatComponent userUsername={user.username} />}
+      {activeSection === "chat" && user && (
+        <ChatComponent userUsername={user.username} userId={user.id} />
+      )}
       {activeSection === "profile" && user && <Profile user={user} />}
+      {activeSection === "follow" && user && <Follow userId={user.id} />}
     </div>
   );
 };

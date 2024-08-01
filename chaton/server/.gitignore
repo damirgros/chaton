@@ -1,3 +1,30 @@
-node_modules
-# Keep environment variables out of version control
+# Node modules directory
+node_modules/
+
+# Environment variables
 .env
+
+# Log files
+*.log
+
+
+# Prisma-specific files
+prisma/migrations/
+prisma/dev.db
+
+# Coverage directory used by testing tools
+coverage/
+
+# Build output
+dist/
+build/
+
+# Misc
+*.swp
+*.swo
+
+# Temporary files
+tmp/
+
+# Exclude seed script
+seed.js

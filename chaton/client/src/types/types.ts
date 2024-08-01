@@ -53,4 +53,5 @@ export interface Message {
 
 export interface ChatComponentProps {
   userUsername: string;
+  userId: string;
 }
