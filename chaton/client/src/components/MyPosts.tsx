@@ -18,15 +18,15 @@ const MyPosts: React.FC<MyPostsProps> = ({
 
   const myPosts = posts.filter((post) => post.author.id === currentUser);
 
-  const handleDelete = (postId: string) => {
-    axios
-      .delete(`/api/posts/${postId}`)
-      .then(() => {
-        onDelete(postId);
-      })
-      .catch((error) => {
-        console.error("Error deleting post:", error);
+  const handleDelete = async (postId: string) => {
+    try {
+      await axios.delete(`/api/posts/${postId}`, {
+        headers: { "x-user-id": currentUser === "guest" ? "guest" : "" },
       });
+      onDelete(postId);
+    } catch (error) {
+      console.error("Error deleting post:", error);
+    }
   };
 
   const handleSaveEdit = async () => {
@@ -44,10 +44,16 @@ const MyPosts: React.FC<MyPostsProps> = ({
 
     try {
       // Update the post in the database
-      await axios.put<{ post: Post }>(`/api/posts/${editingPost.id}`, {
-        title: editTitle,
-        content: editContent,
-      });
+      await axios.put<{ post: Post }>(
+        `/api/posts/${editingPost.id}`,
+        {
+          title: editTitle,
+          content: editContent,
+        },
+        {
+          headers: { "x-user-id": currentUser === "guest" ? "guest" : "" },
+        }
+      );
     } catch (error) {
       console.error("Error updating post:", error);
       alert("Issue with the database. Try again, please.");

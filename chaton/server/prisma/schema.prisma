@@ -9,19 +9,20 @@ datasource db {
 
 model User {
   id                String        @id @default(uuid())
-  email             String        @unique
+  email             String?       @unique
   username          String        @unique
-  password          String
+  password          String?
   profilePicture    String?
   bio               String?
   location          String?
   createdAt         DateTime      @default(now())
   updatedAt         DateTime      @updatedAt
+  isGuest           Boolean       @default(false)
   posts             Post[]
   sentMessages      Message[]     @relation("SentMessages")
   receivedMessages  Message[]     @relation("ReceivedMessages")
-  followers Follows[] @relation("following")
-  following Follows[] @relation("follower")
+  followers         Follows[]     @relation("following")
+  following         Follows[]     @relation("follower")
 }
 
 model Post {

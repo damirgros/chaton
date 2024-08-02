@@ -23,14 +23,20 @@ const CreatePost: React.FC<CreatePostProps> = ({ userId, onPostCreated, username
     };
 
     try {
-      await axios.post<{ message: string; post: Post }>("/api/posts", {
-        title,
-        content,
-        userId,
-      });
+      const response = await axios.post<{ message: string; post: Post }>(
+        "/api/posts",
+        {
+          title,
+          content,
+          userId,
+        },
+        {
+          headers: { "x-user-id": userId === "guest" ? "guest" : "" },
+        }
+      );
 
       // Update the parent component with the new post
-      onPostCreated(newPost);
+      onPostCreated({ ...newPost, id: response.data.post.id });
 
       // Clear the form fields
       setTitle("");

@@ -55,3 +55,7 @@ export interface ChatComponentProps {
   userUsername: string;
   userId: string;
 }
+
+export interface FollowProps {
+  userId: string;
+}

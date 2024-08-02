@@ -46,44 +46,6 @@ export const fetchMessages = async (req, res) => {
   }
 };
 
-export const sendMessage = async (req, res) => {
-  const { senderUsername, receiverUsername, message } = req.body;
-
-  try {
-    const [sender, receiver] = await prisma.user.findMany({
-      where: {
-        username: { in: [senderUsername, receiverUsername] },
-      },
-    });
-
-    if (!sender || !receiver) {
-      return res.status(400).json({ message: "Invalid sender or receiver username" });
-    }
-
-    const newMessage = await prisma.message.create({
-      data: {
-        content: message,
-        senderId: sender.id,
-        receiverId: receiver.id,
-      },
-    });
-
-    // Emit the new message to the receiver's socket
-    io.to(receiver.id).emit("receiveMessage", {
-      id: newMessage.id,
-      content: newMessage.content,
-      senderUsername: sender.username,
-      receiverUsername: receiver.username,
-      createdAt: newMessage.createdAt,
-    });
-
-    res.status(200).json({ message: "Message sent successfully" });
-  } catch (error) {
-    console.error("Error sending message:", error);
-    res.status(500).json({ message: "Internal server error", error: error.message });
-  }
-};
-
 export const getUsersWithMessageHistory = async (req, res) => {
   const { username } = req.params;
 

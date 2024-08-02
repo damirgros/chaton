@@ -1,6 +1,9 @@
 export const ensureAuthenticated = (req, res, next) => {
-  if (req.isAuthenticated()) {
+  if (
+    req.isAuthenticated() ||
+    (req.user && req.user.username && req.user.username.includes("Guest"))
+  ) {
     return next();
   }
-  res.status(401).json({ message: "Unauthorized: You need to log in." });
+  res.status(401).json({ message: "Unauthorized" });
 };

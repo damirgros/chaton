@@ -16,7 +16,12 @@ const Login: React.FC = () => {
         navigate(response.data.redirectUrl);
       }
     } catch (err) {
-      setError("Login failed");
+      console.error("Login error:", err);
+      if (axios.isAxiosError(err) && err.response) {
+        setError(err.response.data.message || "Login failed");
+      } else {
+        setError("An unknown error occurred");
+      }
     }
   };
 

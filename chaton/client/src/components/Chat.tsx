@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import io from "socket.io-client";
+import { v4 as uuidv4 } from "uuid";
 import { Message, ChatComponentProps, User } from "../types/types";
 
 const socket = io("http://localhost:5000");
@@ -14,15 +15,13 @@ const ChatComponent: React.FC<ChatComponentProps> = ({ userUsername, userId }) =
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Fetch followed users
     const fetchFollowedUsers = async () => {
       try {
         setLoading(true);
+        setError(null);
         const response = await axios.get<{ users: User[] }>(`/api/user/${userId}/followed`);
-        console.log("Fetched followed users:", response.data.users);
         setFollowedUsers(response.data.users);
       } catch (err) {
-        console.error("Failed to fetch followed users:", err);
         setError("Failed to fetch followed users");
       } finally {
         setLoading(false);
@@ -30,29 +29,33 @@ const ChatComponent: React.FC<ChatComponentProps> = ({ userUsername, userId }) =
     };
 
     fetchFollowedUsers();
+  }, [userId]);
 
-    // Set up socket listeners
-    socket.on("receiveMessage", (newMessage) => {
+  useEffect(() => {
+    const handleMessageReceive = (newMessage: Message) => {
+      console.log("Received message: ", newMessage); // Debugging log
       if (
         newMessage.senderUsername === selectedUser?.username ||
         newMessage.receiverUsername === userUsername
       ) {
         setMessages((prev) => [...prev, newMessage]);
       }
-    });
+    };
+
+    socket.on("receiveMessage", handleMessageReceive);
 
     return () => {
-      socket.off("receiveMessage");
+      socket.off("receiveMessage", handleMessageReceive);
     };
-  }, [userUsername, selectedUser?.username]);
+  }, [selectedUser, userUsername]);
 
   const fetchMessages = async (recipientUsername: string) => {
     try {
       setLoading(true);
+      setError(null);
       const response = await axios.get(`/api/messages/${userUsername}/${recipientUsername}`);
       setMessages(response.data.messages || []);
     } catch (err) {
-      console.error("Failed to fetch messages:", err);
       setError("Failed to fetch messages");
     } finally {
       setLoading(false);
@@ -71,29 +74,27 @@ const ChatComponent: React.FC<ChatComponentProps> = ({ userUsername, userId }) =
     }
 
     try {
-      await axios.post("/api/messages/send", {
+      const newMessage = {
+        id: uuidv4(),
         senderUsername: userUsername,
         receiverUsername: selectedUser.username,
-        message,
-      });
+        content: message,
+        createdAt: new Date().toISOString(),
+      };
 
-      socket.emit("sendMessage", {
-        senderUsername: userUsername,
-        receiverUsername: selectedUser.username,
-        message,
-      });
-
+      socket.emit("sendMessage", newMessage);
+      setMessages((prev) => [...prev, newMessage]); // Update local state immediately
       setMessage("");
-    } catch (e) {
-      console.log((e as Error).message);
+    } catch {
+      setError("Message failed to emit.");
     }
   };
 
   if (loading) return <p>Loading...</p>;
-  if (error) return <p>{error}</p>;
 
   return (
     <div style={{ display: "flex", height: "100vh" }}>
+      {error && <p>{error}</p>}
       <div style={{ width: "30%", borderRight: "1px solid #ccc", overflowY: "auto" }}>
         <h3>Followed Users</h3>
         <ul>

@@ -37,6 +37,13 @@ export const register = async (req, res) => {
 };
 
 export const login = (req, res) => {
+  console.log("Login request received:", req.body);
+
+  if (!req.user) {
+    console.log("Invalid credentials");
+    return res.status(400).json({ message: "Invalid credentials" });
+  }
+
   res.json({ message: "Login successful", user: req.user, redirectUrl: `/user/${req.user.id}` });
 };
 
@@ -45,4 +52,29 @@ export const logout = (req, res, next) => {
     if (err) return next(err);
     res.redirect("/");
   });
+};
+
+export const guestLogin = async (req, res) => {
+  try {
+    const guestUser = await prisma.user.create({
+      data: {
+        username: `Guest_${Math.random().toString(36).substring(7)}`,
+        isGuest: true,
+      },
+    });
+
+    console.log("Created guest user:", guestUser);
+
+    req.login(guestUser, (err) => {
+      if (err) {
+        console.error("Login error:", err);
+        return res.status(500).json({ message: "Internal server error" });
+      }
+      console.log("Logged in user:", req.user);
+      res.json({ userId: guestUser.id });
+    });
+  } catch (error) {
+    console.error("Error creating guest user:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
 };

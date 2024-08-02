@@ -3,7 +3,8 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export const createPost = async (req, res) => {
-  const { title, content, userId } = req.body;
+  const { title, content } = req.body;
+  const userId = req.user.id;
 
   try {
     const post = await prisma.post.create({
@@ -41,6 +42,7 @@ export const fetchPosts = async (req, res) => {
 
 export const deletePost = async (req, res) => {
   const { postId } = req.params;
+  const userId = req.user.id;
 
   try {
     const post = await prisma.post.findUnique({ where: { id: postId } });
@@ -49,7 +51,7 @@ export const deletePost = async (req, res) => {
       return res.status(404).json({ message: "Post not found" });
     }
 
-    if (req.user.id !== post.authorId) {
+    if (post.authorId !== userId && userId !== "guest") {
       return res.status(403).json({ message: "Unauthorized to delete this post" });
     }
 
@@ -64,6 +66,7 @@ export const deletePost = async (req, res) => {
 export const updatePost = async (req, res) => {
   const { postId } = req.params;
   const { title, content } = req.body;
+  const userId = req.user.id;
 
   try {
     const post = await prisma.post.findUnique({ where: { id: postId } });
@@ -72,7 +75,7 @@ export const updatePost = async (req, res) => {
       return res.status(404).json({ message: "Post not found" });
     }
 
-    if (req.user.id !== post.authorId) {
+    if (post.authorId !== userId && userId !== "guest") {
       return res.status(403).json({ message: "Unauthorized to update this post" });
     }
 

@@ -1,10 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { User } from "../types/types";
-
-interface FollowProps {
-  userId: string;
-}
+import { User, FollowProps } from "../types/types";
 
 const Follow: React.FC<FollowProps> = ({ userId }) => {
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -14,7 +10,6 @@ const Follow: React.FC<FollowProps> = ({ userId }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch followed and recommended users when the component mounts
   useEffect(() => {
     fetchFollowedUsers();
     fetchRecommendedUsers();
@@ -63,12 +58,9 @@ const Follow: React.FC<FollowProps> = ({ userId }) => {
 
   const handleFollow = async (userIdToFollow: string) => {
     if (!userIdToFollow) {
-      console.error("Invalid userIdToFollow:", userIdToFollow);
+      setError("Invalid userIdToFollow.");
       return;
     }
-
-    console.log("Attempting to follow user:", userIdToFollow);
-
     try {
       setLoading(true);
       await axios.post(`/api/user/${userId}/follow`, { userIdToFollow });
@@ -83,7 +75,6 @@ const Follow: React.FC<FollowProps> = ({ userId }) => {
       // Optionally update followed users list
       fetchFollowedUsers();
     } catch (err) {
-      console.error("Follow action failed:", err);
       setError("Follow action failed");
     } finally {
       setLoading(false);
@@ -92,7 +83,6 @@ const Follow: React.FC<FollowProps> = ({ userId }) => {
 
   const handleUnfollow = async (userIdToUnfollow: string) => {
     if (!userIdToUnfollow) {
-      console.error("Invalid userIdToUnfollow:", userIdToUnfollow);
       setError("Invalid userIdToUnfollow");
       return;
     }
@@ -102,7 +92,6 @@ const Follow: React.FC<FollowProps> = ({ userId }) => {
       setFollowedUsers((prev) => prev.filter((u) => u.id !== userIdToUnfollow));
       fetchFollowedUsers(); // Refresh the list of followed users
     } catch (err) {
-      console.error("Unfollow action failed:", err);
       setError("Unfollow action failed");
     }
   };
