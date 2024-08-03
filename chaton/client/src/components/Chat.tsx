@@ -2,11 +2,11 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import io from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
-import { Message, ChatComponentProps, User } from "../types/types";
+import { Message, ChatProps, User } from "../types/types";
 
 const socket = io("http://localhost:5000");
 
-const ChatComponent: React.FC<ChatComponentProps> = ({ userUsername, userId }) => {
+const Chat: React.FC<ChatProps> = ({ userUsername, userId }) => {
   const [message, setMessage] = useState<string>("");
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -157,4 +157,4 @@ const ChatComponent: React.FC<ChatComponentProps> = ({ userUsername, userId }) =
   );
 };
 
-export default ChatComponent;
+export default Chat;

@@ -1,12 +1,12 @@
-// UserPage.tsx
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import Posts from "../components/Posts";
+import CommunityPosts from "../components/CommunityPosts";
 import MyPosts from "../components/MyPosts";
-import ChatComponent from "../components/Chat";
+import Chat from "../components/Chat";
 import Profile from "../components/Profile";
 import Follow from "../components/Follow";
+import FollowersPosts from "../components/FollowersPosts";
 import { Post, User } from "../types/types";
 
 const UserPage: React.FC = () => {
@@ -17,8 +17,8 @@ const UserPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [activeSection, setActiveSection] = useState<
-    "posts" | "myPosts" | "chat" | "profile" | "follow"
-  >("posts");
+    "communityPosts" | "myPosts" | "chat" | "profile" | "follow" | "followersPosts"
+  >("communityPosts");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -68,14 +68,20 @@ const UserPage: React.FC = () => {
       <h1>{user?.username}</h1>
       <button onClick={handleLogout}>Logout</button>
       <div className="tabs">
-        <button onClick={() => setActiveSection("posts")}>Posts</button>
+        <button onClick={() => setActiveSection("communityPosts")}>Community Posts</button>
+        <button onClick={() => setActiveSection("followersPosts")}>Followers' Posts</button>
         <button onClick={() => setActiveSection("myPosts")}>My Posts</button>
         <button onClick={() => setActiveSection("chat")}>Chat</button>
         <button onClick={() => setActiveSection("profile")}>Profile</button>
         <button onClick={() => setActiveSection("follow")}>Follow</button>
       </div>
 
-      {activeSection === "posts" && <Posts posts={posts} currentUser={user?.id || null} />}
+      {activeSection === "communityPosts" && (
+        <CommunityPosts posts={posts} currentUser={user?.id || null} />
+      )}
+      {activeSection === "followersPosts" && user && (
+        <FollowersPosts userId={user.id} currentUser={user} />
+      )}
       {activeSection === "myPosts" && user && (
         <MyPosts
           posts={posts}
@@ -88,9 +94,7 @@ const UserPage: React.FC = () => {
           setPosts={setPosts}
         />
       )}
-      {activeSection === "chat" && user && (
-        <ChatComponent userUsername={user.username} userId={user.id} />
-      )}
+      {activeSection === "chat" && user && <Chat userUsername={user.username} userId={user.id} />}
       {activeSection === "profile" && user && <Profile user={user} />}
       {activeSection === "follow" && user && <Follow userId={user.id} />}
     </div>

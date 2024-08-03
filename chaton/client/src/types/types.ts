@@ -3,25 +3,32 @@ export interface Post {
   title: string;
   content: string;
   createdAt: string;
-  author: {
-    id: string;
-    username: string;
-  };
+  author: User;
 }
 
 export interface User {
   id: string;
   username: string;
   email: string;
+  bio?: string;
+  location?: string;
+  profilePicture?: string;
 }
 
 export interface HomePageProps {}
 
 export interface ProfileProps {
-  user: { username: string; email: string };
+  user: {
+    id: string;
+    username: string;
+    email: string;
+    location?: string;
+    bio?: string;
+    profilePicture?: string;
+  };
 }
 
-export interface PostsProps {
+export interface CommunityPostsProps {
   posts: Post[];
   currentUser: string | null;
 }
@@ -51,11 +58,16 @@ export interface Message {
   createdAt: string;
 }
 
-export interface ChatComponentProps {
+export interface ChatProps {
   userUsername: string;
   userId: string;
 }
 
 export interface FollowProps {
   userId: string;
+}
+
+export interface FollowersPostsProps {
+  userId: string;
+  currentUser: User | null;
 }
