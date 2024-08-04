@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { ProfileProps } from "../types/types";
+import { ProfileProps } from "../../types/types";
 import gravatar from "gravatar";
 import { useNavigate } from "react-router-dom";
+import "./Profile.css";
 
 const Profile: React.FC<ProfileProps> = ({ user }) => {
   const [editMode, setEditMode] = useState(false);

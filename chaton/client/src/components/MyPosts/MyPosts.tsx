@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import CreatePost from "./CreatePost";
+import CreatePost from "../CreatePost/CreatePost";
 import axios from "axios";
-import { Post, MyPostsProps } from "../types/types";
+import { Post, MyPostsProps } from "../../types/types";
 import gravatar from "gravatar";
 import "./MyPosts.css"; // Import the CSS file
 

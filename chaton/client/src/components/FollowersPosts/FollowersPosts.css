@@ -1,4 +1,4 @@
-.posts {
+.followers-posts {
   padding: 20px;
 }
 
@@ -17,7 +17,7 @@
   margin-bottom: 15px;
 }
 
-.profile-picture {
+.author-avatar {
   width: 50px;
   height: 50px;
   border-radius: 50%;
@@ -32,8 +32,6 @@
 
 .post h3 {
   margin: 0;
-  font-size: 1.2rem;
-  font-weight: bold;
 }
 
 .post p {
@@ -60,7 +58,7 @@
 
 .comments {
   margin-top: 10px;
-  padding-left: 30px; /* Indent comments to the right */
+  padding-left: 30px;
   border-left: 2px solid #ddd;
 }
 

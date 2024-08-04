@@ -1,23 +1,28 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import "./Login.css";
 
-const Register: React.FC = () => {
+const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [username, setUsername] = useState("");
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await axios.post("/api/auth/register", { email, password, username });
+      const response = await axios.post("/api/auth/login", { email, password });
       if (response.data.redirectUrl) {
         navigate(response.data.redirectUrl);
       }
     } catch (err) {
-      setError("Registration failed");
+      console.error("Login error:", err);
+      if (axios.isAxiosError(err) && err.response) {
+        setError(err.response.data.message || "Login failed");
+      } else {
+        setError("An unknown error occurred");
+      }
     }
   };
 
@@ -36,14 +41,10 @@ const Register: React.FC = () => {
           required
         />
       </div>
-      <div>
-        <label>Username</label>
-        <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
-      </div>
       {error && <p>{error}</p>}
-      <button type="submit">Register</button>
+      <button type="submit">Login</button>
     </form>
   );
 };
 
-export default Register;
+export default Login;

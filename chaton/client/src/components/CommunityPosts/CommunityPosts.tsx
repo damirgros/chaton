@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { CommunityPostsProps } from "../types/types";
+import { CommunityPostsProps } from "../../types/types";
 import gravatar from "gravatar";
 import "./CommunityPosts.css";
-import { useComments } from "../customHooks/useComments";
+import { useComments } from "../../customHooks/useComments";
 
 const CommunityPosts: React.FC<CommunityPostsProps> = ({ posts, currentUser }) => {
   const [showComments, setShowComments] = useState<Record<string, boolean>>({});

@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import io from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
-import { Message, ChatProps, User } from "../types/types";
+import { Message, ChatProps, User } from "../../types/types";
+import "./Chat.css";
 
 const socket = io("http://localhost:5000");
 

@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import CommunityPosts from "../components/CommunityPosts";
-import MyPosts from "../components/MyPosts";
-import Chat from "../components/Chat";
-import Profile from "../components/Profile";
-import Follow from "../components/Follow";
-import FollowersPosts from "../components/FollowersPosts";
-import { Post, User } from "../types/types";
+import CommunityPosts from "../../components/CommunityPosts/CommunityPosts";
+import MyPosts from "../../components/MyPosts/MyPosts";
+import Chat from "../../components/Chat/Chat";
+import Profile from "../../components/Profile/Profile";
+import Follow from "../../components/Follow/Follow";
+import FollowersPosts from "../../components/FollowersPosts/FollowersPosts";
+import { Post, User } from "../../types/types";
+import "./UserPage.css";
 
 const UserPage: React.FC = () => {
   const { userId } = useParams<{ userId: string }>();

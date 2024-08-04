@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Post, FollowersPostsProps } from "../types/types";
+import { Post, FollowersPostsProps } from "../../types/types";
 import gravatar from "gravatar";
 import "./FollowersPosts.css";
-import { useComments } from "../customHooks/useComments";
+import { useComments } from "../../customHooks/useComments";
 
 const FollowersPosts: React.FC<FollowersPostsProps> = ({ userId, currentUser }) => {
   const [posts, setPosts] = useState<Post[]>([]);

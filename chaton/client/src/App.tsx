@@ -2,10 +2,10 @@
 
 import React from "react";
 import { Routes, Route } from "react-router-dom";
-import HomePage from "./pages/HomePage";
-import Login from "./components/Login";
-import Register from "./components/Register";
-import UserPage from "./pages/UserPage";
+import HomePage from "./pages/HomePage/HomePage";
+import Login from "./components/Login/Login";
+import Register from "./components/Register/Register";
+import UserPage from "./pages/UserPage/UserPage";
 
 const App: React.FC = () => {
   return (

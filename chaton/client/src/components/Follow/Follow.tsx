@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { User, FollowProps } from "../types/types";
+import { User, FollowProps } from "../../types/types";
+import gravatar from "gravatar";
+import "./Follow.css";
 
 const Follow: React.FC<FollowProps> = ({ userId }) => {
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -115,27 +117,77 @@ const Follow: React.FC<FollowProps> = ({ userId }) => {
         <>
           <h3>Search Results</h3>
           <ul>
-            {searchResults.map((u) => (
-              <li key={u.id}>
-                {u.username}
-                <button onClick={() => handleFollow(u.id)}>Follow</button>
-              </li>
-            ))}
+            {searchResults.length === 0 ? (
+              <p>Search users to follow...</p>
+            ) : (
+              searchResults.map((u) => (
+                <li key={u.id}>
+                  <img
+                    src={
+                      u.profilePicture?.startsWith("http")
+                        ? u.profilePicture
+                        : `http://localhost:5000${u.profilePicture}`
+                    }
+                    alt="Profile Picture"
+                    onError={(e) => {
+                      console.error(`Error loading image: ${u.profilePicture}`, e);
+                      e.currentTarget.src = gravatar.url(u.email, { s: "200", d: "retro" }, true); // Fallback to gravatar
+                    }}
+                  />
+                  <p>Username: {u.username}</p>
+                  <p>Bio: {u.bio}</p>
+                  <p>Location: {u.location}</p>
+                  <button onClick={() => handleFollow(u.id)}>Follow</button>
+                </li>
+              ))
+            )}
           </ul>
           <h3>Followed Users</h3>
           <ul>
-            {followedUsers.map((u) => (
-              <li key={u.id}>
-                {u.username}
-                <button onClick={() => handleUnfollow(u.id)}>Unfollow</button>
-              </li>
-            ))}
+            {followedUsers.length === 0 ? (
+              <p>No users followed.</p>
+            ) : (
+              followedUsers.map((u) => (
+                <li key={u.id}>
+                  <img
+                    src={
+                      u.profilePicture?.startsWith("http")
+                        ? u.profilePicture
+                        : `http://localhost:5000${u.profilePicture}`
+                    }
+                    alt="Profile Picture"
+                    onError={(e) => {
+                      console.error(`Error loading image: ${u.profilePicture}`, e);
+                      e.currentTarget.src = gravatar.url(u.email, { s: "200", d: "retro" }, true); // Fallback to gravatar
+                    }}
+                  />
+                  <p>Username: {u.username}</p>
+                  <p>Bio: {u.bio}</p>
+                  <p>Location: {u.location}</p>
+                  <button onClick={() => handleUnfollow(u.id)}>Unfollow</button>
+                </li>
+              ))
+            )}
           </ul>
           <h3>Recommended Users</h3>
           <ul>
             {recommendedUsers.map((u) => (
               <li key={u.id}>
-                {u.username}
+                <img
+                  src={
+                    u.profilePicture?.startsWith("http")
+                      ? u.profilePicture
+                      : `http://localhost:5000${u.profilePicture}`
+                  }
+                  alt="Profile Picture"
+                  onError={(e) => {
+                    console.error(`Error loading image: ${u.profilePicture}`, e);
+                    e.currentTarget.src = gravatar.url(u.email, { s: "200", d: "retro" }, true); // Fallback to gravatar
+                  }}
+                />
+                <p>Username: {u.username}</p>
+                <p>Bio: {u.bio}</p>
+                <p>Location: {u.location}</p>
                 <button onClick={() => handleFollow(u.id)}>Follow</button>
               </li>
             ))}

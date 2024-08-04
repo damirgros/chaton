@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import Login from "../components/Login";
-import Register from "../components/Register";
+import Login from "../../components/Login/Login";
+import Register from "../../components/Register/Register";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { HomePageProps } from "../types/types";
+import { HomePageProps } from "../../types/types";
+import "./HomePage.css";
 
 const HomePage: React.FC<HomePageProps> = () => {
   const [isLogin, setIsLogin] = useState(true);
