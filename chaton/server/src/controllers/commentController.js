@@ -2,95 +2,6 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export const createPost = async (req, res) => {
-  const { title, content } = req.body;
-  const userId = req.user.id;
-
-  try {
-    const post = await prisma.post.create({
-      data: {
-        title,
-        content,
-        authorId: userId,
-      },
-    });
-
-    res.status(201).json({ message: "Post created successfully", post });
-  } catch (error) {
-    console.error("Error creating post:", error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-};
-
-export const fetchPosts = async (req, res) => {
-  try {
-    const posts = await prisma.post.findMany({
-      include: {
-        author: {
-          select: { username: true, id: true }, // Include only necessary fields
-        },
-      },
-      orderBy: { createdAt: "desc" },
-    });
-
-    res.json({ posts });
-  } catch (error) {
-    console.error("Error fetching posts:", error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-};
-
-export const deletePost = async (req, res) => {
-  const { postId } = req.params;
-  const userId = req.user.id;
-
-  try {
-    const post = await prisma.post.findUnique({ where: { id: postId } });
-
-    if (!post) {
-      return res.status(404).json({ message: "Post not found" });
-    }
-
-    if (post.authorId !== userId && userId !== "guest") {
-      return res.status(403).json({ message: "Unauthorized to delete this post" });
-    }
-
-    await prisma.post.delete({ where: { id: postId } });
-    res.status(200).json({ message: "Post deleted successfully" });
-  } catch (error) {
-    console.error("Error deleting post:", error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-};
-
-export const updatePost = async (req, res) => {
-  const { postId } = req.params;
-  const { title, content } = req.body;
-  const userId = req.user.id;
-
-  try {
-    const post = await prisma.post.findUnique({ where: { id: postId } });
-
-    if (!post) {
-      return res.status(404).json({ message: "Post not found" });
-    }
-
-    if (post.authorId !== userId && userId !== "guest") {
-      return res.status(403).json({ message: "Unauthorized to update this post" });
-    }
-
-    const updatedPost = await prisma.post.update({
-      where: { id: postId },
-      data: { title, content },
-    });
-
-    res.json({ message: "Post updated successfully", post: updatedPost });
-  } catch (error) {
-    console.error("Error updating post:", error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-};
-
 export const createComment = async (req, res) => {
   const { content } = req.body;
   const { postId } = req.params;
@@ -164,25 +75,49 @@ export const deleteComment = async (req, res) => {
 export const updateComment = async (req, res) => {
   const { commentId } = req.params;
   const { content } = req.body;
-  const userId = req.user.id;
+  const userId = req.user?.id; // Ensure the user ID is properly fetched
 
   try {
+    // Fetch the comment to update
     const comment = await prisma.comment.findUnique({ where: { id: commentId } });
 
     if (!comment) {
       return res.status(404).json({ message: "Comment not found" });
     }
 
+    // Check authorization
     if (comment.authorId !== userId && userId !== "guest") {
       return res.status(403).json({ message: "Unauthorized to update this comment" });
     }
 
+    // Update the comment
     const updatedComment = await prisma.comment.update({
       where: { id: commentId },
       data: { content },
     });
 
-    res.json({ message: "Comment updated successfully", comment: updatedComment });
+    // Fetch the user information based on the authorId of the updated comment
+    const user = await prisma.user.findUnique({
+      where: { id: updatedComment.authorId },
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Send the updated comment and user information in the response
+    res.json({
+      message: "Comment updated successfully",
+      comment: {
+        ...updatedComment,
+        author: {
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          profilePicture: user.profilePicture, // Include additional user information if needed
+        },
+      },
+    });
   } catch (error) {
     console.error("Error updating comment:", error);
     res.status(500).json({ message: "Internal server error" });

@@ -76,9 +76,7 @@ const UserPage: React.FC = () => {
         <button onClick={() => setActiveSection("follow")}>Follow</button>
       </div>
 
-      {activeSection === "communityPosts" && (
-        <CommunityPosts posts={posts} currentUser={user?.id || null} />
-      )}
+      {activeSection === "communityPosts" && <CommunityPosts posts={posts} currentUser={user} />}
       {activeSection === "followersPosts" && user && (
         <FollowersPosts userId={user.id} currentUser={user} />
       )}

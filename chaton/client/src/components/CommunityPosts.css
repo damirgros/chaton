@@ -1,4 +1,3 @@
-/* CommunityPosts.css */
 .posts {
   padding: 20px;
 }
@@ -43,4 +42,117 @@
 
 .post small {
   color: #888;
+}
+
+.comment-toggle-button {
+  margin-top: 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.comment-toggle-button:hover {
+  background-color: #0056b3;
+}
+
+.comments {
+  margin-top: 10px;
+  padding-left: 30px; /* Indent comments to the right */
+  border-left: 2px solid #ddd;
+}
+
+.comment {
+  border-bottom: 1px solid #eee;
+  padding: 10px 0;
+}
+
+.comment:last-child {
+  border-bottom: none;
+}
+
+.comment-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.comment-author-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.delete-button {
+  margin-left: auto;
+  background-color: #dc3545;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.delete-button:hover {
+  background-color: #c82333;
+}
+
+.add-comment {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.add-comment input {
+  padding: 5px;
+  margin-bottom: 5px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.add-comment button {
+  background-color: #28a745;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.add-comment button:hover {
+  background-color: #218838;
+}
+
+.edit-comment-form {
+  display: flex;
+  align-items: center;
+}
+
+.edit-comment-form input {
+  flex: 1;
+  padding: 5px;
+  margin-right: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.update-button,
+.cancel-button {
+  background-color: #28a745;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 5px 10px;
+  cursor: pointer;
+  margin-left: 5px;
+}
+
+.cancel-button {
+  background-color: #dc3545;
+}
+
+.update-button:hover,
+.cancel-button:hover {
+  opacity: 0.9;
 }

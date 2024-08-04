@@ -19,6 +19,7 @@ model User {
   updatedAt         DateTime      @updatedAt
   isGuest           Boolean       @default(false)
   posts             Post[]
+  comments          Comment[]     // User's comments
   sentMessages      Message[]     @relation("SentMessages")
   receivedMessages  Message[]     @relation("ReceivedMessages")
   followers         Follows[]     @relation("following")
@@ -33,6 +34,18 @@ model Post {
   updatedAt DateTime @updatedAt
   authorId  String
   author    User     @relation(fields: [authorId], references: [id])
+  comments  Comment[]  
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id])
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id])
 }
 
 model Message {

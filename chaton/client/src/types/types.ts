@@ -2,8 +2,9 @@ export interface Post {
   id: string;
   title: string;
   content: string;
-  createdAt: string;
   author: User;
+  createdAt: string;
+  comments: Comment[];
 }
 
 export interface User {
@@ -30,7 +31,7 @@ export interface ProfileProps {
 
 export interface CommunityPostsProps {
   posts: Post[];
-  currentUser: string | null;
+  currentUser: User | null;
 }
 
 export interface MyPostsProps {
@@ -70,4 +71,11 @@ export interface FollowProps {
 export interface FollowersPostsProps {
   userId: string;
   currentUser: User | null;
+}
+
+export interface Comment {
+  id: string;
+  author: User;
+  content: string;
+  createdAt: string;
 }
