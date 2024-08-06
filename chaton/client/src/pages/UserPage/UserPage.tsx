@@ -8,7 +8,7 @@ import Profile from "../../components/Profile/Profile";
 import Follow from "../../components/Follow/Follow";
 import FollowersPosts from "../../components/FollowersPosts/FollowersPosts";
 import { Post, User } from "../../types/types";
-import "./UserPage.css";
+import styles from "./UserPage.module.css";
 
 const UserPage: React.FC = () => {
   const { userId } = useParams<{ userId: string }>();
@@ -65,37 +65,79 @@ const UserPage: React.FC = () => {
   if (error) return <p>{error}</p>;
 
   return (
-    <div className="user-page">
-      <h1>{user?.username}</h1>
-      <button onClick={handleLogout}>Logout</button>
-      <div className="tabs">
-        <button onClick={() => setActiveSection("communityPosts")}>Community Posts</button>
-        <button onClick={() => setActiveSection("followersPosts")}>Followers' Posts</button>
-        <button onClick={() => setActiveSection("myPosts")}>My Posts</button>
-        <button onClick={() => setActiveSection("chat")}>Chat</button>
-        <button onClick={() => setActiveSection("profile")}>Profile</button>
-        <button onClick={() => setActiveSection("follow")}>Follow</button>
+    <div>
+      <div className={styles.navigation}>
+        <h1 className={styles.logo}>chatON</h1>
+        <div className={styles.tabs}>
+          <button
+            className={`${styles.buttonPage} ${
+              activeSection === "communityPosts" ? styles.active : ""
+            }`}
+            onClick={() => setActiveSection("communityPosts")}
+          >
+            Community Posts
+          </button>
+          <button
+            className={`${styles.buttonPage} ${
+              activeSection === "followersPosts" ? styles.active : ""
+            }`}
+            onClick={() => setActiveSection("followersPosts")}
+          >
+            Followers' Posts
+          </button>
+          <button
+            className={`${styles.buttonPage} ${activeSection === "myPosts" ? styles.active : ""}`}
+            onClick={() => setActiveSection("myPosts")}
+          >
+            My Posts
+          </button>
+          <button
+            className={`${styles.buttonPage} ${activeSection === "chat" ? styles.active : ""}`}
+            onClick={() => setActiveSection("chat")}
+          >
+            Chat
+          </button>
+          <button
+            className={`${styles.buttonPage} ${activeSection === "profile" ? styles.active : ""}`}
+            onClick={() => setActiveSection("profile")}
+          >
+            Profile
+          </button>
+          <button
+            className={`${styles.buttonPage} ${activeSection === "follow" ? styles.active : ""}`}
+            onClick={() => setActiveSection("follow")}
+          >
+            Follow
+          </button>
+        </div>
+        <div className={styles.navigationUser}>
+          <h1 className={styles.username}>{user?.username}</h1>
+          <button className={styles.buttonLogout} onClick={handleLogout}>
+            Logout
+          </button>
+        </div>
       </div>
-
-      {activeSection === "communityPosts" && <CommunityPosts posts={posts} currentUser={user} />}
-      {activeSection === "followersPosts" && user && (
-        <FollowersPosts userId={user.id} currentUser={user} />
-      )}
-      {activeSection === "myPosts" && user && (
-        <MyPosts
-          posts={posts}
-          currentUser={user.id}
-          username={user.username}
-          onPostCreated={handlePostCreated}
-          onDelete={handlePostDeleted}
-          editingPost={editingPost}
-          setEditingPost={setEditingPost}
-          setPosts={setPosts}
-        />
-      )}
-      {activeSection === "chat" && user && <Chat userUsername={user.username} userId={user.id} />}
-      {activeSection === "profile" && user && <Profile user={user} />}
-      {activeSection === "follow" && user && <Follow userId={user.id} />}
+      <div className={styles.userPage}>
+        {activeSection === "communityPosts" && <CommunityPosts posts={posts} currentUser={user} />}
+        {activeSection === "followersPosts" && user && (
+          <FollowersPosts userId={user.id} currentUser={user} />
+        )}
+        {activeSection === "myPosts" && user && (
+          <MyPosts
+            posts={posts}
+            currentUser={user.id}
+            username={user.username}
+            onPostCreated={handlePostCreated}
+            onDelete={handlePostDeleted}
+            editingPost={editingPost}
+            setEditingPost={setEditingPost}
+            setPosts={setPosts}
+          />
+        )}
+        {activeSection === "chat" && user && <Chat userUsername={user.username} userId={user.id} />}
+        {activeSection === "profile" && user && <Profile user={user} />}
+        {activeSection === "follow" && user && <Follow userId={user.id} />}
+      </div>
     </div>
   );
 };

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import "./Login.css";
+import styles from "./Login.module.css"; // Import the CSS module
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -27,22 +27,33 @@ const Login: React.FC = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label>Email</label>
-        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+    <form onSubmit={handleSubmit} className={styles.form}>
+      <div className={styles.inputGroup}>
+        <input
+          type="email"
+          value={email}
+          placeholder="Email"
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          className={styles.input}
+        />
       </div>
       <div>
-        <label>Password</label>
         <input
           type="password"
           value={password}
+          placeholder="Password"
           onChange={(e) => setPassword(e.target.value)}
           required
+          className={styles.input}
         />
       </div>
-      {error && <p>{error}</p>}
-      <button type="submit">Login</button>
+      {error && <p className={styles.error}>{error}</p>}
+      <div className={styles.buttonBox}>
+        <button className={styles.buttonLogin} type="submit">
+          Login
+        </button>
+      </div>
     </form>
   );
 };

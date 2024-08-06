@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { User, FollowProps } from "../../types/types";
 import gravatar from "gravatar";
-import "./Follow.css";
+import styles from "./Follow.module.css";
 
 const Follow: React.FC<FollowProps> = ({ userId }) => {
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -21,7 +21,6 @@ const Follow: React.FC<FollowProps> = ({ userId }) => {
     try {
       setLoading(true);
       const response = await axios.get<{ users: User[] }>(`/api/user/${userId}/followed`);
-      console.log("Fetched followed users:", response.data.users);
       setFollowedUsers(response.data.users);
     } catch (err) {
       console.error("Failed to fetch followed users:", err);
@@ -66,15 +65,8 @@ const Follow: React.FC<FollowProps> = ({ userId }) => {
     try {
       setLoading(true);
       await axios.post(`/api/user/${userId}/follow`, { userIdToFollow });
-      console.log("Follow request successful");
-
-      // Remove the followed user from the recommended list
       setRecommendedUsers((prev) => prev.filter((u) => u.id !== userIdToFollow));
-
-      // Fetch a new recommended user
       fetchRecommendedUsers();
-
-      // Optionally update followed users list
       fetchFollowedUsers();
     } catch (err) {
       setError("Follow action failed");
@@ -92,36 +84,39 @@ const Follow: React.FC<FollowProps> = ({ userId }) => {
     try {
       await axios.post(`/api/user/${userId}/unfollow`, { userIdToUnfollow });
       setFollowedUsers((prev) => prev.filter((u) => u.id !== userIdToUnfollow));
-      fetchFollowedUsers(); // Refresh the list of followed users
+      fetchFollowedUsers();
     } catch (err) {
       setError("Unfollow action failed");
     }
   };
 
   return (
-    <div className="follow-page">
+    <div className={styles.followPage}>
       <h2>Follow Users</h2>
-      <div>
+      <div className={styles.searchContainer}>
         <input
           type="text"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           placeholder="Search for users..."
+          className={styles.searchInput}
         />
-        <button onClick={handleSearch}>Search</button>
+        <button onClick={handleSearch} className={styles.searchButton}>
+          Search
+        </button>
       </div>
-      {error && <p>{error}</p>}
+      {error && <p className={styles.error}>{error}</p>}
       {loading ? (
-        <p>Loading...</p>
+        <p className={styles.loading}>Loading...</p>
       ) : (
         <>
           <h3>Search Results</h3>
-          <ul>
+          <ul className={styles.userList}>
             {searchResults.length === 0 ? (
-              <p>Search users to follow...</p>
+              <p>No users found. Try searching for different terms...</p>
             ) : (
               searchResults.map((u) => (
-                <li key={u.id}>
+                <li key={u.id} className={styles.userItem}>
                   <img
                     src={
                       u.profilePicture?.startsWith("http")
@@ -129,26 +124,31 @@ const Follow: React.FC<FollowProps> = ({ userId }) => {
                         : `http://localhost:5000${u.profilePicture}`
                     }
                     alt="Profile Picture"
+                    className={styles.userAvatar}
                     onError={(e) => {
                       console.error(`Error loading image: ${u.profilePicture}`, e);
-                      e.currentTarget.src = gravatar.url(u.email, { s: "200", d: "retro" }, true); // Fallback to gravatar
+                      e.currentTarget.src = gravatar.url(u.email, { s: "200", d: "retro" }, true);
                     }}
                   />
-                  <p>Username: {u.username}</p>
-                  <p>Bio: {u.bio}</p>
-                  <p>Location: {u.location}</p>
-                  <button onClick={() => handleFollow(u.id)}>Follow</button>
+                  <div className={styles.userInfo}>
+                    <p>Username: {u.username}</p>
+                    <p>Bio: {u.bio}</p>
+                    <p>Location: {u.location}</p>
+                    <button onClick={() => handleFollow(u.id)} className={styles.followButton}>
+                      Follow
+                    </button>
+                  </div>
                 </li>
               ))
             )}
           </ul>
           <h3>Followed Users</h3>
-          <ul>
+          <ul className={styles.userList}>
             {followedUsers.length === 0 ? (
               <p>No users followed.</p>
             ) : (
               followedUsers.map((u) => (
-                <li key={u.id}>
+                <li key={u.id} className={styles.userItem}>
                   <img
                     src={
                       u.profilePicture?.startsWith("http")
@@ -156,23 +156,28 @@ const Follow: React.FC<FollowProps> = ({ userId }) => {
                         : `http://localhost:5000${u.profilePicture}`
                     }
                     alt="Profile Picture"
+                    className={styles.userAvatar}
                     onError={(e) => {
                       console.error(`Error loading image: ${u.profilePicture}`, e);
-                      e.currentTarget.src = gravatar.url(u.email, { s: "200", d: "retro" }, true); // Fallback to gravatar
+                      e.currentTarget.src = gravatar.url(u.email, { s: "200", d: "retro" }, true);
                     }}
                   />
-                  <p>Username: {u.username}</p>
-                  <p>Bio: {u.bio}</p>
-                  <p>Location: {u.location}</p>
-                  <button onClick={() => handleUnfollow(u.id)}>Unfollow</button>
+                  <div className={styles.userInfo}>
+                    <p>Username: {u.username}</p>
+                    <p>Bio: {u.bio}</p>
+                    <p>Location: {u.location}</p>
+                    <button onClick={() => handleUnfollow(u.id)} className={styles.unfollowButton}>
+                      Unfollow
+                    </button>
+                  </div>
                 </li>
               ))
             )}
           </ul>
           <h3>Recommended Users</h3>
-          <ul>
+          <ul className={styles.userList}>
             {recommendedUsers.map((u) => (
-              <li key={u.id}>
+              <li key={u.id} className={styles.userItem}>
                 <img
                   src={
                     u.profilePicture?.startsWith("http")
@@ -180,15 +185,20 @@ const Follow: React.FC<FollowProps> = ({ userId }) => {
                       : `http://localhost:5000${u.profilePicture}`
                   }
                   alt="Profile Picture"
+                  className={styles.userAvatar}
                   onError={(e) => {
                     console.error(`Error loading image: ${u.profilePicture}`, e);
-                    e.currentTarget.src = gravatar.url(u.email, { s: "200", d: "retro" }, true); // Fallback to gravatar
+                    e.currentTarget.src = gravatar.url(u.email, { s: "200", d: "retro" }, true);
                   }}
                 />
-                <p>Username: {u.username}</p>
-                <p>Bio: {u.bio}</p>
-                <p>Location: {u.location}</p>
-                <button onClick={() => handleFollow(u.id)}>Follow</button>
+                <div className={styles.userInfo}>
+                  <p>Username: {u.username}</p>
+                  <p>Bio: {u.bio}</p>
+                  <p>Location: {u.location}</p>
+                  <button onClick={() => handleFollow(u.id)} className={styles.followButton}>
+                    Follow
+                  </button>
+                </div>
               </li>
             ))}
           </ul>

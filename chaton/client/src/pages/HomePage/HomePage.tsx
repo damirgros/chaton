@@ -4,7 +4,8 @@ import Register from "../../components/Register/Register";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { HomePageProps } from "../../types/types";
-import "./HomePage.css";
+import styles from "./HomePage.module.css";
+import Logo from "../../assets/chaton-logo.svg";
 
 const HomePage: React.FC<HomePageProps> = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -25,27 +26,33 @@ const HomePage: React.FC<HomePageProps> = () => {
   };
 
   return (
-    <div className="home-page">
+    <div className={styles.homePage}>
+      <Logo />
       <h1>{isLogin ? "Login" : "Register"}</h1>
       {isLogin ? <Login /> : <Register />}
-      <div className="toggle-message">
-        {isLogin ? (
-          <p>
-            If you don't have an account,
-            <button onClick={toggleView}>Register here</button>
-          </p>
-        ) : (
-          <p>
-            If you already have an account,
-            <button onClick={toggleView}>Login here</button>
-          </p>
-        )}
-      </div>
-      <div className="guest-login">
-        <p>
-          Or,
-          <button onClick={handleGuestLogin}>Sign in as Guest</button>
-        </p>
+      <div className={styles.toggleMessage}>
+        <div>
+          {isLogin ? (
+            <p className={styles.message}>
+              If you don't have an account,
+              <button className={styles.buttonHome} onClick={toggleView}>
+                Register here
+              </button>
+            </p>
+          ) : (
+            <p className={styles.message}>
+              If you already have an account,
+              <button className={styles.buttonHome} onClick={toggleView}>
+                Login here
+              </button>
+            </p>
+          )}
+        </div>
+        <div>
+          <button className={styles.buttonHome} onClick={handleGuestLogin}>
+            Sign in as Guest
+          </button>
+        </div>
       </div>
     </div>
   );

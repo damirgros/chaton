@@ -3,7 +3,7 @@ import axios from "axios";
 import io from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
 import { Message, ChatProps, User } from "../../types/types";
-import "./Chat.css";
+import styles from "./Chat.module.css";
 
 const socket = io("http://localhost:5000");
 
@@ -94,18 +94,14 @@ const Chat: React.FC<ChatProps> = ({ userUsername, userId }) => {
   if (loading) return <p>Loading...</p>;
 
   return (
-    <div style={{ display: "flex", height: "100vh" }}>
+    <div className={styles.chatContainer}>
       {error && <p>{error}</p>}
-      <div style={{ width: "30%", borderRight: "1px solid #ccc", overflowY: "auto" }}>
+      <div className={styles.sidebar}>
         <h3>Followed Users</h3>
-        <ul>
+        <ul className={styles.userList}>
           {followedUsers.length > 0 ? (
             followedUsers.map((user) => (
-              <li
-                key={user.id}
-                onClick={() => handleUserClick(user)}
-                style={{ cursor: "pointer", padding: "10px", borderBottom: "1px solid #eee" }}
-              >
+              <li key={user.id} onClick={() => handleUserClick(user)} className={styles.userItem}>
                 {user.username}
               </li>
             ))
@@ -114,24 +110,19 @@ const Chat: React.FC<ChatProps> = ({ userUsername, userId }) => {
           )}
         </ul>
       </div>
-      <div style={{ width: "70%", padding: "10px" }}>
+      <div className={styles.messagesContainer}>
         {selectedUser ? (
           <>
             <h3>Conversation with {selectedUser.username}</h3>
-            <div style={{ maxHeight: "70vh", overflowY: "auto" }}>
+            <div className={styles.messages}>
               {messages.length > 0 ? (
                 messages.map((msg) => (
-                  <div
-                    key={msg.id}
-                    className="message"
-                    style={{ padding: "10px", borderBottom: "1px solid #eee" }}
-                  >
+                  <div key={msg.id} className={styles.message}>
                     <p>
-                      <strong>{msg.senderUsername}:</strong> {msg.content}
+                      <span className={styles.messageSender}>{msg.senderUsername}:</span>{" "}
+                      {msg.content}
                     </p>
-                    <p>
-                      <small>{new Date(msg.createdAt).toLocaleString()}</small>
-                    </p>
+                    <p className={styles.messageDate}>{new Date(msg.createdAt).toLocaleString()}</p>
                   </div>
                 ))
               ) : (
@@ -143,9 +134,9 @@ const Chat: React.FC<ChatProps> = ({ userUsername, userId }) => {
                 placeholder="Enter your message"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                style={{ width: "100%", height: "100px", marginTop: "10px" }}
+                className={styles.textarea}
               />
-              <button onClick={sendMessage} style={{ marginTop: "10px" }}>
+              <button onClick={sendMessage} className={styles.sendButton}>
                 Send
               </button>
             </div>

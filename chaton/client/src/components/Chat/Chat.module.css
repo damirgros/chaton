@@ -1,0 +1,90 @@
+.chatContainer {
+  display: flex;
+  height: 100vh;
+  background-color: #4c74bb; /* Dark background for the whole chat */
+}
+
+.sidebar {
+  width: 30%;
+  border-right: 1px solid #444;
+  overflow-y: auto;
+  background-color: #314c79; /* Darker background for sidebar */
+  padding: 20px;
+}
+
+.sidebar h3 {
+  color: #fff;
+}
+
+.userList {
+  list-style: none;
+  padding: 0;
+}
+
+.userItem {
+  cursor: pointer;
+  padding: 10px;
+  border-bottom: 1px solid #333;
+  color: #34c294; /* Accent color for user items */
+}
+
+.userItem:hover {
+  background-color: #444; /* Darker background on hover */
+}
+
+.messagesContainer {
+  width: 70%;
+  padding: 20px;
+  color: #fff; /* Text color for messages */
+}
+
+.messagesContainer h3 {
+  color: #fff;
+}
+
+.messages {
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.message {
+  padding: 10px;
+  border-bottom: 1px solid #444;
+  margin-bottom: 10px;
+  background-color: #2a2a2a; /* Dark background for individual messages */
+}
+
+.messageSender {
+  font-weight: bold;
+  color: #34c294; /* Accent color for message sender */
+}
+
+.messageDate {
+  color: #888;
+  font-size: 0.8rem;
+}
+
+.textarea {
+  width: 100%;
+  height: 100px;
+  padding: 10px;
+  margin-top: 10px;
+  border: 1px solid #444;
+  border-radius: 4px;
+  background-color: #333;
+  color: #fff;
+}
+
+.sendButton {
+  margin-top: 10px;
+  padding: 10px 20px;
+  background-color: #34c294; /* Accent color for the send button */
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.sendButton:hover {
+  background-color: #0b7e59; /* Darker shade of the accent color */
+}

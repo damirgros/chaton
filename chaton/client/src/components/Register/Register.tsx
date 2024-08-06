@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import "./Register.css";
+import styles from "./Register.module.css";
 
 const Register: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -23,26 +23,43 @@ const Register: React.FC = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label>Email</label>
-        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-      </div>
-      <div>
-        <label>Password</label>
+    <form onSubmit={handleSubmit} className={styles.form}>
+      <div className={styles.inputGroup}>
         <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
+          type="text"
+          placeholder="Username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          className={styles.input}
         />
       </div>
       <div>
-        <label>Username</label>
-        <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          className={styles.input}
+        />
       </div>
-      {error && <p>{error}</p>}
-      <button type="submit">Register</button>
+      <div>
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+          className={styles.input}
+        />
+      </div>
+
+      {error && <p className={styles.error}>{error}</p>}
+      <div className={styles.buttonBox}>
+        <button className={styles.buttonRegister} type="submit">
+          Register
+        </button>
+      </div>
     </form>
   );
 };

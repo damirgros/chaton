@@ -3,7 +3,7 @@ import axios from "axios";
 import { ProfileProps } from "../../types/types";
 import gravatar from "gravatar";
 import { useNavigate } from "react-router-dom";
-import "./Profile.css";
+import styles from "./Profile.module.css";
 
 const Profile: React.FC<ProfileProps> = ({ user }) => {
   const [editMode, setEditMode] = useState(false);
@@ -78,8 +78,8 @@ const Profile: React.FC<ProfileProps> = ({ user }) => {
   };
 
   return (
-    <div className="profile">
-      <h2>Profile</h2>
+    <div className={styles.profile}>
+      <h2 className={styles.profileTitle}>Profile</h2>
       <img
         src={
           profilePicture.startsWith("http")
@@ -87,37 +87,58 @@ const Profile: React.FC<ProfileProps> = ({ user }) => {
             : `http://localhost:5000${profilePicture}`
         }
         alt="Profile Picture"
+        className={styles.profileImage}
         onError={(e) => {
           console.error(`Error loading image: ${profilePicture}`, e);
           e.currentTarget.src = gravatar.url(user.email, { s: "200", d: "retro" }, true); // Fallback to gravatar
         }}
       />
-      <p>Username: {user.username}</p>
-      <p>Email: {user.email}</p>
+      <p className={styles.profileText}>Username: {user.username}</p>
+      <p className={styles.profileText}>Email: {user.email}</p>
       {editMode ? (
-        <div>
-          <label>
+        <div className={styles.editForm}>
+          <label className={styles.formLabel}>
             Bio:
-            <input type="text" value={bio} onChange={(e) => setBio(e.target.value)} />
+            <input
+              type="text"
+              value={bio}
+              onChange={(e) => setBio(e.target.value)}
+              className={styles.input}
+            />
           </label>
-          <label>
+          <label className={styles.formLabel}>
             Location:
-            <input type="text" value={location} onChange={(e) => setLocation(e.target.value)} />
+            <input
+              type="text"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              className={styles.input}
+            />
           </label>
-          <label>
+          <label className={styles.formLabel}>
             Profile Picture:
-            <input type="file" accept="image/*" name="profilePicture" onChange={handleFileChange} />
+            <input
+              type="file"
+              accept="image/*"
+              name="profilePicture"
+              onChange={handleFileChange}
+              className={styles.fileInput}
+            />
           </label>
-          <button onClick={handleSave}>Save</button>
+          <button onClick={handleSave} className={styles.saveButton}>
+            Save
+          </button>
         </div>
       ) : (
-        <div>
-          <p>Bio: {bio || "No bio available"}</p>
-          <p>Location: {location || "No location available"}</p>
-          <button onClick={() => setEditMode(true)}>Edit Profile</button>
+        <div className={styles.profileDetails}>
+          <p className={styles.profileText}>Bio: {bio || "No bio available"}</p>
+          <p className={styles.profileText}>Location: {location || "No location available"}</p>
+          <button onClick={() => setEditMode(true)} className={styles.editButton}>
+            Edit Profile
+          </button>
         </div>
       )}
-      <button onClick={handleDeleteAccount} style={{ color: "red" }}>
+      <button onClick={handleDeleteAccount} className={styles.deleteButton}>
         Delete Account
       </button>
     </div>

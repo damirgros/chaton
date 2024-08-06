@@ -3,7 +3,7 @@ import CreatePost from "../CreatePost/CreatePost";
 import axios from "axios";
 import { Post, MyPostsProps } from "../../types/types";
 import gravatar from "gravatar";
-import "./MyPosts.css"; // Import the CSS file
+import styles from "./MyPosts.module.css";
 
 const MyPosts: React.FC<MyPostsProps> = ({
   posts,
@@ -34,18 +34,7 @@ const MyPosts: React.FC<MyPostsProps> = ({
   const handleSaveEdit = async () => {
     if (!editingPost) return;
 
-    // Optimistically update the UI
-    setPosts((prevPosts) =>
-      prevPosts.map((post) =>
-        post.id === editingPost.id ? { ...post, title: editTitle, content: editContent } : post
-      )
-    );
-
-    // Clear the editing state
-    setEditingPost(null);
-
     try {
-      // Update the post in the database
       await axios.put<{ post: Post }>(
         `/api/posts/${editingPost.id}`,
         {
@@ -56,66 +45,86 @@ const MyPosts: React.FC<MyPostsProps> = ({
           headers: { "x-user-id": currentUser === "guest" ? "guest" : "" },
         }
       );
+
+      setPosts((prevPosts) =>
+        prevPosts.map((post) =>
+          post.id === editingPost.id ? { ...post, title: editTitle, content: editContent } : post
+        )
+      );
+      setEditingPost(null);
     } catch (error) {
       console.error("Error updating post:", error);
-      alert("Issue with the database. Try again, please.");
+      alert("Issue with the database. Please try again.");
     }
   };
 
   return (
-    <div className="my-posts">
+    <div className={styles.myPosts}>
       <CreatePost userId={currentUser} username={username} onPostCreated={onPostCreated} />
       {myPosts.length === 0 ? (
         <p>No posts available</p>
       ) : (
         myPosts.map((post) => (
-          <div key={post.id} className="post">
-            <div className="post-header">
+          <div key={post.id} className={styles.post}>
+            <div className={styles.postHeader}>
               <img
                 src={
-                  post.author.profilePicture
+                  post.author.profilePicture && post.author.profilePicture.startsWith("http")
                     ? post.author.profilePicture
-                    : gravatar.url(post.author.email, { s: "50", d: "retro" }, true)
+                    : gravatar.url(post.author.username, { s: "50", d: "retro" }, true)
                 }
                 alt={post.author.username}
-                className="author-avatar"
+                className={styles.profilePicture}
               />
-              <div className="post-author-info">
+              <div className={styles.postAuthorInfo}>
                 <strong>{post.author.username}</strong>
               </div>
             </div>
             {editingPost?.id === post.id ? (
-              <div className="edit-post-form">
+              <div className={styles.editPostForm}>
                 <input
                   type="text"
                   value={editTitle}
                   onChange={(e) => setEditTitle(e.target.value)}
                   placeholder="Post Title"
+                  className={styles.editInput}
                 />
                 <textarea
                   value={editContent}
                   onChange={(e) => setEditContent(e.target.value)}
                   placeholder="Post Content"
+                  className={styles.editTextarea}
                 />
-                <button onClick={handleSaveEdit}>Save</button>
-                <button onClick={() => setEditingPost(null)}>Cancel</button>
+                <button onClick={handleSaveEdit} className={styles.saveButton}>
+                  Save
+                </button>
+                <button onClick={() => setEditingPost(null)} className={styles.cancelButton}>
+                  Cancel
+                </button>
               </div>
             ) : (
-              <div className="post-content">
-                <h3>{post.title}</h3>
+              <div className={styles.postContent}>
+                <h3 className={styles.postTitle}>{post.title}</h3>
                 <p>{post.content}</p>
-                <small>Posted on: {new Date(post.createdAt).toLocaleString()}</small>
-                <div className="post-actions">
-                  <button
-                    onClick={() => {
-                      setEditingPost(post);
-                      setEditTitle(post.title);
-                      setEditContent(post.content);
-                    }}
-                  >
-                    Edit
-                  </button>
-                  <button onClick={() => handleDelete(post.id)}>Delete</button>
+                <div className={styles.postDateContainer}>
+                  <small className={styles.postDate}>
+                    Posted on: {new Date(post.createdAt).toLocaleString()}
+                  </small>
+                  <div className={styles.postActions}>
+                    <button
+                      onClick={() => {
+                        setEditingPost(post);
+                        setEditTitle(post.title);
+                        setEditContent(post.content);
+                      }}
+                      className={styles.editButton}
+                    >
+                      Edit
+                    </button>
+                    <button onClick={() => handleDelete(post.id)} className={styles.deleteButton}>
+                      Delete
+                    </button>
+                  </div>
                 </div>
               </div>
             )}

@@ -1,4 +1,8 @@
-.followers-posts {
+.followersPosts {
+  margin-top: 25px;
+}
+
+.posts {
   padding: 20px;
 }
 
@@ -9,15 +13,17 @@
   margin-bottom: 20px;
   display: flex;
   flex-direction: column;
+  background-color: #314c79;
+  color: white;
 }
 
-.post-header {
+.postHeader {
   display: flex;
   align-items: center;
   margin-bottom: 15px;
 }
 
-.author-avatar {
+.profilePicture {
   width: 50px;
   height: 50px;
   border-radius: 50%;
@@ -25,35 +31,42 @@
   object-fit: cover;
 }
 
-.post-author-info {
+.postAuthorInfo {
   display: flex;
   flex-direction: column;
 }
 
 .post h3 {
   margin: 0;
+  font-size: 1.2rem;
+  font-weight: bold;
 }
 
 .post p {
   margin: 10px 0;
 }
 
+.postFooter {
+  display: flex;
+  align-items: center;
+}
+
 .post small {
   color: #888;
 }
 
-.comment-toggle-button {
-  margin-top: 10px;
-  background-color: #007bff;
+.commentToggleButton {
+  background-color: #34c294;
   color: #fff;
   border: none;
   border-radius: 4px;
   padding: 5px 10px;
   cursor: pointer;
+  margin-left: 20px;
 }
 
-.comment-toggle-button:hover {
-  background-color: #0056b3;
+.commentToggleButton:hover {
+  background-color: #0b7e59;
 }
 
 .comments {
@@ -71,63 +84,74 @@
   border-bottom: none;
 }
 
-.comment-header {
+.commentHeader {
   display: flex;
   align-items: center;
   margin-bottom: 10px;
 }
 
-.comment-author-info {
+.commentAuthorInfo {
   display: flex;
   flex-direction: column;
 }
 
-.delete-button {
-  margin-left: auto;
+.commentBody {
+  margin-bottom: 10px;
+}
+
+.commentFooter {
+  display: flex;
+  align-items: center;
+}
+
+.deleteButton {
   background-color: #dc3545;
   color: #fff;
   border: none;
   border-radius: 4px;
   padding: 5px 10px;
   cursor: pointer;
+  margin-left: 10px;
 }
 
-.delete-button:hover {
+.deleteButton:hover {
   background-color: #c82333;
 }
 
-.add-comment {
+.addComment {
   margin-top: 10px;
   display: flex;
   flex-direction: column;
+  gap: 20px;
+  padding: 20px;
 }
 
-.add-comment input {
+.addCommentInput {
   padding: 5px;
-  margin-bottom: 5px;
   border: 1px solid #ddd;
   border-radius: 4px;
 }
 
-.add-comment button {
-  background-color: #28a745;
+.addCommentButton {
+  background-color: #34c294;
   color: #fff;
   border: none;
   border-radius: 4px;
   padding: 5px 10px;
   cursor: pointer;
+  width: 20%;
 }
 
-.add-comment button:hover {
-  background-color: #218838;
+.addCommentButton:hover {
+  background-color: #0b7e59;
 }
 
-.edit-comment-form {
+.editCommentForm {
   display: flex;
   align-items: center;
 }
 
-.edit-comment-form input {
+.editCommentInput {
   flex: 1;
   padding: 5px;
   margin-right: 10px;
@@ -135,9 +159,9 @@
   border-radius: 4px;
 }
 
-.update-button,
-.cancel-button {
-  background-color: #28a745;
+.updateButton,
+.cancelButton {
+  background-color: #34c294;
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -146,11 +170,32 @@
   margin-left: 5px;
 }
 
-.cancel-button {
+.cancelButton {
   background-color: #dc3545;
 }
 
-.update-button:hover,
-.cancel-button:hover {
+.updateButton:hover,
+.cancelButton:hover {
   opacity: 0.9;
+}
+
+.editCommentButtons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.editButton {
+  background-color: #34c294;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 5px 10px;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.editButton:hover {
+  background-color: #0b7e59;
 }

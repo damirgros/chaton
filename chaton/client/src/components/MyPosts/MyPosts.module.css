@@ -1,0 +1,112 @@
+.myPosts {
+  padding: 20px;
+}
+
+.post {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  background-color: #314c79;
+  color: white;
+}
+
+.postHeader {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.profilePicture {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 15px;
+  object-fit: cover;
+}
+
+.postAuthorInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.postTitle {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.postContent {
+  margin: 10px 0;
+}
+
+.postDateContainer {
+  display: flex;
+  align-items: center;
+}
+
+.postDate {
+  color: #888;
+}
+
+.editPostForm {
+  display: flex;
+  flex-direction: column;
+}
+
+.editInput,
+.editTextarea {
+  width: 50%;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 5px;
+}
+
+.saveButton,
+.editButton {
+  background-color: #34c294;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.cancelButton,
+.deleteButton {
+  background-color: red;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.editButton {
+  margin-right: 10px;
+  margin-left: 10px;
+}
+
+.saveButton,
+.cancelButton {
+  width: 30%;
+  margin-top: 10px;
+}
+
+.saveButton:hover,
+.editButton:hover {
+  background-color: #0b7e59;
+}
+
+.cancelButton:hover,
+.deleteButton:hover {
+  background-color: rgb(138, 2, 2);
+}
+
+.postActions {
+  display: flex;
+  align-items: center;
+}

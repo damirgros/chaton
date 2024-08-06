@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { CommunityPostsProps } from "../../types/types";
 import gravatar from "gravatar";
-import "./CommunityPosts.css";
+import styles from "./CommunityPosts.module.css";
 import { useComments } from "../../customHooks/useComments";
 
 const CommunityPosts: React.FC<CommunityPostsProps> = ({ posts, currentUser }) => {
@@ -43,7 +43,7 @@ const CommunityPosts: React.FC<CommunityPostsProps> = ({ posts, currentUser }) =
   };
 
   return (
-    <div className="posts">
+    <div className={styles.posts}>
       {posts
         .filter((post) => post.author.id !== currentUser?.id)
         .map((post) => {
@@ -51,64 +51,78 @@ const CommunityPosts: React.FC<CommunityPostsProps> = ({ posts, currentUser }) =
             post.author?.profilePicture ||
             gravatar.url(post.author?.email, { s: "50", d: "retro" }, true);
           return (
-            <div key={post.id} className="post">
-              <div className="post-header">
+            <div key={post.id} className={styles.post}>
+              <div className={styles.postHeader}>
                 <img
                   src={profilePicture}
                   alt={post.author?.username || "Profile"}
-                  className="profile-picture"
+                  className={styles.profilePicture}
                 />
-                <div className="post-author-info">
-                  <strong className="post-author-name">
+                <div className={styles.postAuthorInfo}>
+                  <strong className={styles.postAuthorName}>
                     {post.author?.username || "Unknown User"}
                   </strong>
                 </div>
               </div>
-              <div className="post-body">
-                <h3 className="post-title">{post.title}</h3>
-                <p className="post-content">{post.content}</p>
-                <small className="post-date">
+              <div className={styles.postBody}>
+                <h3 className={styles.postTitle}>{post.title}</h3>
+                <p className={styles.postContent}>{post.content}</p>
+                <small className={styles.postDate}>
                   Posted on: {new Date(post.createdAt).toLocaleString()}
                 </small>
-                <button onClick={() => toggleComments(post.id)} className="comment-toggle-button">
+                <button
+                  onClick={() => toggleComments(post.id)}
+                  className={styles.commentToggleButton}
+                >
                   {showComments[post.id] ? "Hide Comments" : "Show Comments"}
                 </button>
                 {showComments[post.id] && (
                   <>
-                    <div className="comments">
+                    <div className={styles.comments}>
                       {postComments[post.id]?.map((comment) => {
                         const commentProfilePicture =
                           comment.author?.profilePicture ||
                           gravatar.url(comment.author?.email, { s: "50", d: "retro" }, true);
                         return (
-                          <div key={comment.id} className="comment">
-                            <div className="comment-header">
+                          <div key={comment.id} className={styles.comment}>
+                            <div className={styles.commentHeader}>
                               <img
                                 src={commentProfilePicture}
                                 alt={comment.author?.username || "Profile"}
-                                className="profile-picture"
+                                className={styles.profilePicture}
                               />
-                              <div className="comment-author-info">
-                                <strong className="comment-author-name">
+                              <div className={styles.commentAuthorInfo}>
+                                <strong className={styles.commentAuthorName}>
                                   {comment.author?.username || "Unknown User"}
                                 </strong>
+                              </div>
+                            </div>
+                            <div className={styles.commentBody}>
+                              <p className={styles.commentContent}>{comment.content}</p>
+                              <div className={styles.commentActions}>
+                                <small className={styles.commentDate}>
+                                  Commented on: {new Date(comment.createdAt).toLocaleString()}
+                                </small>
                                 {comment.author?.id === currentUser?.id && (
                                   <>
                                     {editingCommentId === comment.id ? (
-                                      <div className="edit-comment">
-                                        <input
-                                          type="text"
+                                      <div className={styles.editComment}>
+                                        <textarea
                                           value={editCommentContent}
                                           onChange={(e) => setEditCommentContent(e.target.value)}
                                           placeholder="Edit your comment"
+                                          className={styles.editCommentInput}
                                         />
                                         <button
                                           onClick={() => handleEditComment(post.id, comment.id)}
-                                          className="update-button"
+                                          className={styles.updateButton}
                                         >
                                           Save
                                         </button>
-                                        <button onClick={cancelEdit} className="cancel-button">
+                                        <button
+                                          onClick={cancelEdit}
+                                          className={styles.cancelButton}
+                                        >
                                           Cancel
                                         </button>
                                       </div>
@@ -118,13 +132,13 @@ const CommunityPosts: React.FC<CommunityPostsProps> = ({ posts, currentUser }) =
                                           onClick={() =>
                                             handleEditButtonClick(comment.id, comment.content)
                                           }
-                                          className="edit-button"
+                                          className={styles.editButton}
                                         >
                                           Edit
                                         </button>
                                         <button
                                           onClick={() => handleDeleteComment(comment.id, post.id)}
-                                          className="delete-button"
+                                          className={styles.deleteButton}
                                         >
                                           Delete
                                         </button>
@@ -134,25 +148,22 @@ const CommunityPosts: React.FC<CommunityPostsProps> = ({ posts, currentUser }) =
                                 )}
                               </div>
                             </div>
-                            <div className="comment-body">
-                              <p className="comment-content">{comment.content}</p>
-                              <small className="comment-date">
-                                Commented on: {new Date(comment.createdAt).toLocaleString()}
-                              </small>
-                            </div>
                           </div>
                         );
                       })}
                     </div>
                     {currentUser && (
-                      <div className="add-comment">
-                        <input
-                          type="text"
+                      <div className={styles.addComment}>
+                        <textarea
                           placeholder="Add a comment"
                           value={commentContent}
                           onChange={(e) => setCommentContent(e.target.value)}
+                          className={styles.addCommentInput}
                         />
-                        <button onClick={() => handleAddComment(post.id, commentContent)}>
+                        <button
+                          onClick={() => handleAddComment(post.id, commentContent)}
+                          className={styles.addCommentButton}
+                        >
                           Comment
                         </button>
                       </div>
