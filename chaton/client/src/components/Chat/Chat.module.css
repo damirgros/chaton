@@ -1,14 +1,14 @@
 .chatContainer {
   display: flex;
   height: 100vh;
-  background-color: #4c74bb; /* Dark background for the whole chat */
+  background-color: #4c74bb;
 }
 
 .sidebar {
   width: 30%;
   border-right: 1px solid #444;
   overflow-y: auto;
-  background-color: #314c79; /* Darker background for sidebar */
+  background-color: #314c79;
   padding: 20px;
 }
 
@@ -25,17 +25,17 @@
   cursor: pointer;
   padding: 10px;
   border-bottom: 1px solid #333;
-  color: #34c294; /* Accent color for user items */
+  color: #34c294;
 }
 
 .userItem:hover {
-  background-color: #444; /* Darker background on hover */
+  background-color: #444;
 }
 
 .messagesContainer {
   width: 70%;
   padding: 20px;
-  color: #fff; /* Text color for messages */
+  color: #fff;
 }
 
 .messagesContainer h3 {
@@ -51,12 +51,12 @@
   padding: 10px;
   border-bottom: 1px solid #444;
   margin-bottom: 10px;
-  background-color: #2a2a2a; /* Dark background for individual messages */
+  background-color: #2a2a2a;
 }
 
 .messageSender {
   font-weight: bold;
-  color: #34c294; /* Accent color for message sender */
+  color: #34c294;
 }
 
 .messageDate {
@@ -78,7 +78,7 @@
 .sendButton {
   margin-top: 10px;
   padding: 10px 20px;
-  background-color: #34c294; /* Accent color for the send button */
+  background-color: #34c294;
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -86,5 +86,5 @@
 }
 
 .sendButton:hover {
-  background-color: #0b7e59; /* Darker shade of the accent color */
+  background-color: #0b7e59;
 }

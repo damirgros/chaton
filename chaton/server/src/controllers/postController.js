@@ -17,7 +17,6 @@ export const createPost = async (req, res) => {
 
     res.status(201).json({ message: "Post created successfully", post });
   } catch (error) {
-    console.error("Error creating post:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -27,7 +26,7 @@ export const fetchPosts = async (req, res) => {
     const posts = await prisma.post.findMany({
       include: {
         author: {
-          select: { username: true, id: true }, // Include only necessary fields
+          select: { username: true, id: true },
         },
       },
       orderBy: { createdAt: "desc" },
@@ -35,7 +34,6 @@ export const fetchPosts = async (req, res) => {
 
     res.json({ posts });
   } catch (error) {
-    console.error("Error fetching posts:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -58,7 +56,6 @@ export const deletePost = async (req, res) => {
     await prisma.post.delete({ where: { id: postId } });
     res.status(200).json({ message: "Post deleted successfully" });
   } catch (error) {
-    console.error("Error deleting post:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -86,7 +83,6 @@ export const updatePost = async (req, res) => {
 
     res.json({ message: "Post updated successfully", post: updatedPost });
   } catch (error) {
-    console.error("Error updating post:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -112,7 +108,6 @@ export const createComment = async (req, res) => {
 
     res.status(201).json({ message: "Comment created successfully", comment });
   } catch (error) {
-    console.error("Error creating comment:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -133,7 +128,6 @@ export const fetchComments = async (req, res) => {
 
     res.json({ comments });
   } catch (error) {
-    console.error("Error fetching comments:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -156,7 +150,6 @@ export const deleteComment = async (req, res) => {
     await prisma.comment.delete({ where: { id: commentId } });
     res.status(200).json({ message: "Comment deleted successfully" });
   } catch (error) {
-    console.error("Error deleting comment:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -184,7 +177,6 @@ export const updateComment = async (req, res) => {
 
     res.json({ message: "Comment updated successfully", comment: updatedComment });
   } catch (error) {
-    console.error("Error updating comment:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };

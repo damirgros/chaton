@@ -13,21 +13,22 @@ const MyPosts: React.FC<MyPostsProps> = ({
   editingPost,
   setEditingPost,
   setPosts,
-  username,
 }) => {
   const [editTitle, setEditTitle] = useState<string>("");
   const [editContent, setEditContent] = useState<string>("");
+  const [error, setError] = useState<string | null>(null);
 
-  const myPosts = posts.filter((post) => post.author.id === currentUser);
+  const myPosts = posts.filter((post) => post.author.id === currentUser.id);
 
   const handleDelete = async (postId: string) => {
     try {
       await axios.delete(`/api/posts/${postId}`, {
-        headers: { "x-user-id": currentUser === "guest" ? "guest" : "" },
+        headers: { "x-user-id": currentUser.id === "guest" ? "guest" : "" },
       });
       onDelete(postId);
-    } catch (error) {
-      console.error("Error deleting post:", error);
+      setError(null);
+    } catch (err) {
+      setError("Error deleting post.");
     }
   };
 
@@ -42,7 +43,7 @@ const MyPosts: React.FC<MyPostsProps> = ({
           content: editContent,
         },
         {
-          headers: { "x-user-id": currentUser === "guest" ? "guest" : "" },
+          headers: { "x-user-id": currentUser.id === "guest" ? "guest" : "" },
         }
       );
 
@@ -52,15 +53,16 @@ const MyPosts: React.FC<MyPostsProps> = ({
         )
       );
       setEditingPost(null);
-    } catch (error) {
-      console.error("Error updating post:", error);
-      alert("Issue with the database. Please try again.");
+      setError(null);
+    } catch (err) {
+      setError("Error updating post.");
     }
   };
 
   return (
     <div className={styles.myPosts}>
-      <CreatePost userId={currentUser} username={username} onPostCreated={onPostCreated} />
+      <CreatePost currentUser={currentUser} onPostCreated={onPostCreated} />
+      {error && <p className={styles.error}>{error}</p>}
       {myPosts.length === 0 ? (
         <p>No posts available</p>
       ) : (
@@ -69,11 +71,11 @@ const MyPosts: React.FC<MyPostsProps> = ({
             <div className={styles.postHeader}>
               <img
                 src={
-                  post.author.profilePicture && post.author.profilePicture.startsWith("http")
-                    ? post.author.profilePicture
-                    : gravatar.url(post.author.username, { s: "50", d: "retro" }, true)
+                  currentUser.profilePicture
+                    ? currentUser.profilePicture
+                    : gravatar.url(currentUser.username, { s: "50", d: "retro" }, true)
                 }
-                alt={post.author.username}
+                alt={currentUser.username}
                 className={styles.profilePicture}
               />
               <div className={styles.postAuthorInfo}>

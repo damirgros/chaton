@@ -9,6 +9,7 @@ import Logo from "../../assets/chaton-logo.svg";
 
 const HomePage: React.FC<HomePageProps> = () => {
   const [isLogin, setIsLogin] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const toggleView = () => {
@@ -20,8 +21,9 @@ const HomePage: React.FC<HomePageProps> = () => {
       const response = await axios.post("/api/auth/guest-login");
       const { userId } = response.data;
       navigate(`/user/${userId}`);
+      setError(null);
     } catch (err) {
-      console.error("Failed to sign in as guest", err);
+      setError("Failed to sign in as guest. Please try again.");
     }
   };
 
@@ -29,6 +31,7 @@ const HomePage: React.FC<HomePageProps> = () => {
     <div className={styles.homePage}>
       <Logo />
       <h1>{isLogin ? "Login" : "Register"}</h1>
+      {error && <p className={styles.error}>{error}</p>}
       {isLogin ? <Login /> : <Register />}
       <div className={styles.toggleMessage}>
         <div>

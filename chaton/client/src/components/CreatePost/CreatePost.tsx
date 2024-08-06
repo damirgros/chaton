@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { Post, CreatePostProps } from "../types/types";
+import { Post, CreatePostProps } from "../../types/types";
 import styles from "./CreatePost.module.css";
+import gravatar from "gravatar";
 
-const CreatePost: React.FC<CreatePostProps> = ({ userId, onPostCreated, username }) => {
+const CreatePost: React.FC<CreatePostProps> = ({ currentUser, onPostCreated }) => {
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
@@ -11,15 +12,17 @@ const CreatePost: React.FC<CreatePostProps> = ({ userId, onPostCreated, username
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    // Create the new post object
     const newPost: Post = {
-      id: "", // This will be replaced by the server response
+      id: "",
       title,
       content,
       createdAt: new Date().toISOString(),
       author: {
-        id: userId,
-        username,
+        id: currentUser.id,
+        username: currentUser.username,
+        profilePicture:
+          currentUser.profilePicture ||
+          gravatar.url(currentUser.username, { s: "50", d: "retro" }, true),
       },
     };
 
@@ -29,22 +32,19 @@ const CreatePost: React.FC<CreatePostProps> = ({ userId, onPostCreated, username
         {
           title,
           content,
-          userId,
+          userId: currentUser.id,
         },
         {
-          headers: { "x-user-id": userId === "guest" ? "guest" : "" },
+          headers: { "x-user-id": currentUser.id === "guest" ? "guest" : "" },
         }
       );
 
-      // Update the parent component with the new post
       onPostCreated({ ...newPost, id: response.data.post.id });
 
-      // Clear the form fields
       setTitle("");
       setContent("");
       setError(null);
     } catch (err) {
-      console.error("Failed to create post:", err);
       setError("Failed to create post");
     }
   };

@@ -34,7 +34,6 @@ const Chat: React.FC<ChatProps> = ({ userUsername, userId }) => {
 
   useEffect(() => {
     const handleMessageReceive = (newMessage: Message) => {
-      console.log("Received message: ", newMessage); // Debugging log
       if (
         newMessage.senderUsername === selectedUser?.username ||
         newMessage.receiverUsername === userUsername
@@ -84,7 +83,7 @@ const Chat: React.FC<ChatProps> = ({ userUsername, userId }) => {
       };
 
       socket.emit("sendMessage", newMessage);
-      setMessages((prev) => [...prev, newMessage]); // Update local state immediately
+      setMessages((prev) => [...prev, newMessage]);
       setMessage("");
     } catch {
       setError("Message failed to emit.");

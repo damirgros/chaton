@@ -23,7 +23,6 @@ const Follow: React.FC<FollowProps> = ({ userId }) => {
       const response = await axios.get<{ users: User[] }>(`/api/user/${userId}/followed`);
       setFollowedUsers(response.data.users);
     } catch (err) {
-      console.error("Failed to fetch followed users:", err);
       setError("Failed to fetch followed users");
     } finally {
       setLoading(false);
@@ -35,7 +34,6 @@ const Follow: React.FC<FollowProps> = ({ userId }) => {
       const response = await axios.get<{ users: User[] }>(`/api/user/${userId}/recommended`);
       setRecommendedUsers(response.data.users);
     } catch (err) {
-      console.error("Failed to fetch recommended users:", err);
       setError("Failed to fetch recommended users");
     }
   };
@@ -50,7 +48,6 @@ const Follow: React.FC<FollowProps> = ({ userId }) => {
       const filteredResults = response.data.users.filter((u) => u.id !== userId);
       setSearchResults(filteredResults);
     } catch (err) {
-      console.error("Search failed:", err);
       setError("Search failed");
     } finally {
       setLoading(false);

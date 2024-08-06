@@ -3,8 +3,6 @@ const prisma = new PrismaClient();
 
 const initializeSocket = (io) => {
   io.on("connection", (socket) => {
-    console.log(`User connected: ${socket.id}`);
-
     socket.on(
       "sendMessage",
       async ({ id, senderUsername, content, receiverUsername, createdAt }) => {
@@ -35,15 +33,10 @@ const initializeSocket = (io) => {
             createdAt: newMessage.createdAt,
           });
         } catch (error) {
-          console.error("Error sending message:", error);
           socket.emit("sendMessageError", { message: "Internal server error." });
         }
       }
     );
-
-    socket.on("disconnect", () => {
-      console.log(`User disconnected: ${socket.id}`);
-    });
   });
 };
 

@@ -31,16 +31,12 @@ export const register = async (req, res) => {
       });
     });
   } catch (error) {
-    console.error("Error registering user:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
 
 export const login = (req, res) => {
-  console.log("Login request received:", req.body);
-
   if (!req.user) {
-    console.log("Invalid credentials");
     return res.status(400).json({ message: "Invalid credentials" });
   }
 
@@ -63,18 +59,14 @@ export const guestLogin = async (req, res) => {
       },
     });
 
-    console.log("Created guest user:", guestUser);
-
     req.login(guestUser, (err) => {
       if (err) {
-        console.error("Login error:", err);
         return res.status(500).json({ message: "Internal server error" });
       }
-      console.log("Logged in user:", req.user);
+
       res.json({ userId: guestUser.id });
     });
   } catch (error) {
-    console.error("Error creating guest user:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };

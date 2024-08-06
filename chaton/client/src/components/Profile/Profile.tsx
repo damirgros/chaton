@@ -13,6 +13,7 @@ const Profile: React.FC<ProfileProps> = ({ user }) => {
     user.profilePicture || gravatar.url(user.email, { s: "200", d: "retro" }, true)
   );
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,8 +27,9 @@ const Profile: React.FC<ProfileProps> = ({ user }) => {
         setProfilePicture(
           updatedUser.profilePicture || gravatar.url(user.email, { s: "200", d: "retro" }, true)
         );
-      } catch (error) {
-        console.error("Error fetching user data:", error);
+        setError(null);
+      } catch (err) {
+        setError("Error fetching user data.");
       }
     };
 
@@ -56,8 +58,9 @@ const Profile: React.FC<ProfileProps> = ({ user }) => {
         updatedUser.profilePicture || gravatar.url(user.email, { s: "200", d: "retro" }, true)
       );
       setEditMode(false);
-    } catch (error) {
-      console.error("Error updating profile:", error);
+      setError(null);
+    } catch (err) {
+      setError("Error updating profile.");
     }
   };
 
@@ -72,14 +75,15 @@ const Profile: React.FC<ProfileProps> = ({ user }) => {
     try {
       await axios.delete(`/api/user/${user.id}`);
       navigate("/");
-    } catch (error) {
-      console.error("Error deleting account:", error);
+    } catch (err) {
+      setError("Error deleting account.");
     }
   };
 
   return (
     <div className={styles.profile}>
       <h2 className={styles.profileTitle}>Profile</h2>
+      {error && <p className={styles.error}>{error}</p>}
       <img
         src={
           profilePicture.startsWith("http")
@@ -90,7 +94,7 @@ const Profile: React.FC<ProfileProps> = ({ user }) => {
         className={styles.profileImage}
         onError={(e) => {
           console.error(`Error loading image: ${profilePicture}`, e);
-          e.currentTarget.src = gravatar.url(user.email, { s: "200", d: "retro" }, true); // Fallback to gravatar
+          e.currentTarget.src = gravatar.url(user.email, { s: "200", d: "retro" }, true);
         }}
       />
       <p className={styles.profileText}>Username: {user.username}</p>

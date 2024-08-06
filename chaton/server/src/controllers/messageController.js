@@ -41,7 +41,6 @@ export const fetchMessages = async (req, res) => {
 
     res.json({ messages: formattedMessages });
   } catch (error) {
-    console.error("Error fetching messages:", error);
     res.status(500).json({ message: "Internal server error", error: error.message });
   }
 };
@@ -56,7 +55,6 @@ export const getUsersWithMessageHistory = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Get users with whom the current user has exchanged messages
     const users = await prisma.user.findMany({
       where: {
         OR: [
@@ -66,7 +64,6 @@ export const getUsersWithMessageHistory = async (req, res) => {
       },
     });
 
-    // Format the response to only include necessary user information
     const formattedUsers = users.map((u) => ({
       id: u.id,
       username: u.username,
@@ -74,7 +71,6 @@ export const getUsersWithMessageHistory = async (req, res) => {
 
     res.json({ users: formattedUsers });
   } catch (error) {
-    console.error("Error fetching users with history:", error);
     res.status(500).json({ message: "Internal server error", error: error.message });
   }
 };

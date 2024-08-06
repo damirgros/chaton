@@ -23,7 +23,6 @@ export const createComment = async (req, res) => {
 
     res.status(201).json({ message: "Comment created successfully", comment });
   } catch (error) {
-    console.error("Error creating comment:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -44,7 +43,6 @@ export const fetchComments = async (req, res) => {
 
     res.json({ comments });
   } catch (error) {
-    console.error("Error fetching comments:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -67,7 +65,6 @@ export const deleteComment = async (req, res) => {
     await prisma.comment.delete({ where: { id: commentId } });
     res.status(200).json({ message: "Comment deleted successfully" });
   } catch (error) {
-    console.error("Error deleting comment:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -75,28 +72,24 @@ export const deleteComment = async (req, res) => {
 export const updateComment = async (req, res) => {
   const { commentId } = req.params;
   const { content } = req.body;
-  const userId = req.user?.id; // Ensure the user ID is properly fetched
+  const userId = req.user?.id;
 
   try {
-    // Fetch the comment to update
     const comment = await prisma.comment.findUnique({ where: { id: commentId } });
 
     if (!comment) {
       return res.status(404).json({ message: "Comment not found" });
     }
 
-    // Check authorization
     if (comment.authorId !== userId && userId !== "guest") {
       return res.status(403).json({ message: "Unauthorized to update this comment" });
     }
 
-    // Update the comment
     const updatedComment = await prisma.comment.update({
       where: { id: commentId },
       data: { content },
     });
 
-    // Fetch the user information based on the authorId of the updated comment
     const user = await prisma.user.findUnique({
       where: { id: updatedComment.authorId },
     });
@@ -105,7 +98,6 @@ export const updateComment = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Send the updated comment and user information in the response
     res.json({
       message: "Comment updated successfully",
       comment: {
@@ -114,12 +106,11 @@ export const updateComment = async (req, res) => {
           id: user.id,
           username: user.username,
           email: user.email,
-          profilePicture: user.profilePicture, // Include additional user information if needed
+          profilePicture: user.profilePicture,
         },
       },
     });
   } catch (error) {
-    console.error("Error updating comment:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };

@@ -34,7 +34,6 @@ const UserPage: React.FC = () => {
         setPosts(postsResponse.data.posts);
       } catch (err) {
         setError("Failed to fetch data");
-        console.error(err);
       } finally {
         setLoading(false);
       }
@@ -56,7 +55,6 @@ const UserPage: React.FC = () => {
       await axios.get("/api/auth/logout");
       navigate("/");
     } catch (err) {
-      console.error("Failed to log out", err);
       setError("Failed to log out");
     }
   };
@@ -125,8 +123,7 @@ const UserPage: React.FC = () => {
         {activeSection === "myPosts" && user && (
           <MyPosts
             posts={posts}
-            currentUser={user.id}
-            username={user.username}
+            currentUser={user}
             onPostCreated={handlePostCreated}
             onDelete={handlePostDeleted}
             editingPost={editingPost}

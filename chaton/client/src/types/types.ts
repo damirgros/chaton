@@ -36,8 +36,7 @@ export interface CommunityPostsProps {
 
 export interface MyPostsProps {
   posts: Post[];
-  currentUser: string;
-  username: string;
+  currentUser: User;
   onPostCreated: (newPost: Post) => void;
   onDelete: (postId: string) => void;
   editingPost: Post | null;
@@ -46,8 +45,7 @@ export interface MyPostsProps {
 }
 
 export interface CreatePostProps {
-  userId: string;
-  username: string;
+  currentUser: User;
   onPostCreated: (post: Post) => void;
 }
 
