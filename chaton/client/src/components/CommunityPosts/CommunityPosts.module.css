@@ -1,5 +1,7 @@
 .posts {
   padding: 20px;
+  display: flex;
+  flex-direction: column;
 }
 
 .post {

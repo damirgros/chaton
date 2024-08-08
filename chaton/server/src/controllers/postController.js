@@ -120,7 +120,8 @@ export const fetchComments = async (req, res) => {
       where: { postId },
       include: {
         author: {
-          select: { username: true, id: true, profilePicture: true, email: true }, // Include only necessary fields
+          select: { username: true, id: true, profilePicture: true, email: true },
+          s,
         },
       },
       orderBy: { createdAt: "asc" },

@@ -20,6 +20,7 @@ const UserPage: React.FC = () => {
   const [activeSection, setActiveSection] = useState<
     "communityPosts" | "myPosts" | "chat" | "profile" | "follow" | "followersPosts"
   >("communityPosts");
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -41,6 +42,24 @@ const UserPage: React.FC = () => {
 
     fetchData();
   }, [userId]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 768) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    if (window.innerWidth > 768) {
+      setIsMenuOpen(false);
+    }
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   const handlePostCreated = (newPost: Post) => {
     setPosts((prevPosts) => [newPost, ...prevPosts]);
@@ -66,12 +85,18 @@ const UserPage: React.FC = () => {
     <div>
       <div className={styles.navigation}>
         <h1 className={styles.logo}>chatON</h1>
-        <div className={styles.tabs}>
+        <button className={styles.hamburger} onClick={() => setIsMenuOpen(!isMenuOpen)}>
+          &#9776;
+        </button>
+        <div className={`${styles.tabs} ${isMenuOpen ? styles.show : ""}`}>
           <button
             className={`${styles.buttonPage} ${
               activeSection === "communityPosts" ? styles.active : ""
             }`}
-            onClick={() => setActiveSection("communityPosts")}
+            onClick={() => {
+              setActiveSection("communityPosts");
+              setIsMenuOpen(false);
+            }}
           >
             Community Posts
           </button>
@@ -79,31 +104,46 @@ const UserPage: React.FC = () => {
             className={`${styles.buttonPage} ${
               activeSection === "followersPosts" ? styles.active : ""
             }`}
-            onClick={() => setActiveSection("followersPosts")}
+            onClick={() => {
+              setActiveSection("followersPosts");
+              setIsMenuOpen(false);
+            }}
           >
             Followers' Posts
           </button>
           <button
             className={`${styles.buttonPage} ${activeSection === "myPosts" ? styles.active : ""}`}
-            onClick={() => setActiveSection("myPosts")}
+            onClick={() => {
+              setActiveSection("myPosts");
+              setIsMenuOpen(false);
+            }}
           >
             My Posts
           </button>
           <button
             className={`${styles.buttonPage} ${activeSection === "chat" ? styles.active : ""}`}
-            onClick={() => setActiveSection("chat")}
+            onClick={() => {
+              setActiveSection("chat");
+              setIsMenuOpen(false);
+            }}
           >
             Chat
           </button>
           <button
             className={`${styles.buttonPage} ${activeSection === "profile" ? styles.active : ""}`}
-            onClick={() => setActiveSection("profile")}
+            onClick={() => {
+              setActiveSection("profile");
+              setIsMenuOpen(false);
+            }}
           >
             Profile
           </button>
           <button
             className={`${styles.buttonPage} ${activeSection === "follow" ? styles.active : ""}`}
-            onClick={() => setActiveSection("follow")}
+            onClick={() => {
+              setActiveSection("follow");
+              setIsMenuOpen(false);
+            }}
           >
             Follow
           </button>
