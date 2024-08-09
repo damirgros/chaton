@@ -15,7 +15,7 @@ const Register: React.FC = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await axios.post("/api/auth/register", {
+      const response = await axios.post("https://chaton-f1o0.onrender.com/api/auth/register", {
         email,
         password,
         username,
