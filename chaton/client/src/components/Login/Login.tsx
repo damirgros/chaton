@@ -14,7 +14,7 @@ const Login: React.FC = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await axios.post("/api/auth/login", { email, password });
+      const response = await axios.post(`${REACT_APP_API_URL}/api/auth/login`, { email, password });
       if (response.data.redirectUrl) {
         navigate(response.data.redirectUrl);
       }
