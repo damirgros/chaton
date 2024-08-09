@@ -15,7 +15,7 @@ const Register: React.FC = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await axios.post(`${REACT_APP_API_URL}/api/auth/register`, {
+      const response = await axios.post("/api/auth/register", {
         email,
         password,
         username,
@@ -41,7 +41,7 @@ const Register: React.FC = () => {
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           className={styles.input}
-          autoComplete="new-username"
+          autoComplete="on"
         />
       </div>
       <div>
@@ -54,7 +54,7 @@ const Register: React.FC = () => {
           onChange={(e) => setEmail(e.target.value)}
           required
           className={styles.input}
-          autoComplete="new-email"
+          autoComplete="on"
         />
       </div>
       <div>
@@ -67,7 +67,7 @@ const Register: React.FC = () => {
           onChange={(e) => setPassword(e.target.value)}
           required
           className={styles.input}
-          autoComplete="new-password"
+          autoComplete="on"
         />
       </div>
 
