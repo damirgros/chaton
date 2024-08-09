@@ -6,11 +6,13 @@ import styles from "./Login.module.css"; // Import the CSS module
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const response = await axios.post(`${REACT_APP_API_URL}/api/auth/login`, { email, password });
       if (response.data.redirectUrl) {
@@ -22,6 +24,8 @@ const Login: React.FC = () => {
       } else {
         setError("An unknown error occurred");
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -37,7 +41,7 @@ const Login: React.FC = () => {
           onChange={(e) => setEmail(e.target.value)}
           required
           className={styles.input}
-          autoComplete="off"
+          autoComplete="existing-email"
         />
       </div>
       <div>
@@ -50,13 +54,13 @@ const Login: React.FC = () => {
           onChange={(e) => setPassword(e.target.value)}
           required
           className={styles.input}
-          autoComplete="off"
+          autoComplete="existing-password"
         />
       </div>
       {error && <p className={styles.error}>{error}</p>}
       <div className={styles.buttonBox}>
-        <button className={styles.buttonLogin} type="submit">
-          Login
+        <button className={styles.buttonLogin} type="submit" disabled={loading}>
+          {loading ? "Loging in..." : "Login"}
         </button>
       </div>
     </form>
