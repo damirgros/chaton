@@ -18,7 +18,7 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: path.resolve(__dirname, "../server/src/build"), // Specify the output directory
+    outDir: path.resolve(__dirname, "./dist"), // Specify the output directory
     emptyOutDir: true, // Clean the output directory before each build
   },
 });
