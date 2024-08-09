@@ -27,8 +27,8 @@ const UserPage: React.FC = () => {
     const fetchData = async () => {
       try {
         const [userResponse, postsResponse] = await Promise.all([
-          axios.get<{ user: User }>(`/api/user/${userId}`),
-          axios.get<{ posts: Post[] }>(`/api/posts`),
+          axios.get<{ user: User }>(`${REACT_APP_API_URL}/api/user/${userId}`),
+          axios.get<{ posts: Post[] }>(`${REACT_APP_API_URL}/api/posts`),
         ]);
 
         setUser(userResponse.data.user);
@@ -71,7 +71,7 @@ const UserPage: React.FC = () => {
 
   const handleLogout = async () => {
     try {
-      await axios.get("/api/auth/logout");
+      await axios.get(`${REACT_APP_API_URL}/api/auth/logout`);
       navigate("/");
     } catch (err) {
       setError("Failed to log out");

@@ -27,7 +27,9 @@ const FollowersPosts: React.FC<FollowersPostsProps> = ({ userId, currentUser }) 
   useEffect(() => {
     const fetchFollowersPosts = async () => {
       try {
-        const response = await axios.get<{ posts: Post[] }>(`/api/user/${userId}/followers/posts`);
+        const response = await axios.get<{ posts: Post[] }>(
+          `${REACT_APP_API_URL}/api/user/${userId}/followers/posts`
+        );
         setPosts(response.data.posts);
       } catch (err) {
         setError("Failed to fetch followers' posts");

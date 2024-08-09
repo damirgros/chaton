@@ -13,7 +13,11 @@ const Register: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await axios.post("/api/auth/register", { email, password, username });
+      const response = await axios.post(`${REACT_APP_API_URL}/api/auth/register`, {
+        email,
+        password,
+        username,
+      });
       if (response.data.redirectUrl) {
         navigate(response.data.redirectUrl);
       }

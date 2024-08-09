@@ -20,7 +20,9 @@ const Chat: React.FC<ChatProps> = ({ userUsername, userId }) => {
       try {
         setLoading(true);
         setError(null);
-        const response = await axios.get<{ users: User[] }>(`/api/user/${userId}/followed`);
+        const response = await axios.get<{ users: User[] }>(
+          `${REACT_APP_API_URL}/api/user/${userId}/followed`
+        );
         setFollowedUsers(response.data.users);
       } catch (err) {
         setError("Failed to fetch followed users");
@@ -53,7 +55,9 @@ const Chat: React.FC<ChatProps> = ({ userUsername, userId }) => {
     try {
       setLoading(true);
       setError(null);
-      const response = await axios.get(`/api/messages/${userUsername}/${recipientUsername}`);
+      const response = await axios.get(
+        `${REACT_APP_API_URL}/api/messages/${userUsername}/${recipientUsername}`
+      );
       setMessages(response.data.messages || []);
     } catch (err) {
       setError("Failed to fetch messages");

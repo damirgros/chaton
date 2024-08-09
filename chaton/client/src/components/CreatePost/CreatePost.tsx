@@ -28,7 +28,7 @@ const CreatePost: React.FC<CreatePostProps> = ({ currentUser, onPostCreated }) =
 
     try {
       const response = await axios.post<{ message: string; post: Post }>(
-        "/api/posts",
+        `${REACT_APP_API_URL}/api/posts`,
         {
           title,
           content,

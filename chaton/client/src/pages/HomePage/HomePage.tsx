@@ -18,7 +18,7 @@ const HomePage: React.FC<HomePageProps> = () => {
 
   const handleGuestLogin = async () => {
     try {
-      const response = await axios.post("/api/auth/guest-login");
+      const response = await axios.post(`${REACT_APP_API_URL}/api/auth/guest-login`);
       const { userId } = response.data;
       navigate(`/user/${userId}`);
       setError(null);

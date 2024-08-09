@@ -9,7 +9,9 @@ export const useComments = (initialComments: Record<string, Comment[]> = {}) => 
 
   const fetchComments = useCallback(async (postId: string) => {
     try {
-      const response = await axios.get<{ comments: Comment[] }>(`/api/comments/${postId}/comments`);
+      const response = await axios.get<{ comments: Comment[] }>(
+        `${REACT_APP_API_URL}/api/comments/${postId}/comments`
+      );
       setPostComments((prevComments) => ({
         ...prevComments,
         [postId]: response.data.comments || [],
@@ -21,9 +23,12 @@ export const useComments = (initialComments: Record<string, Comment[]> = {}) => 
 
   const handleAddComment = async (postId: string, content: string) => {
     try {
-      const response = await axios.post<{ comment: Comment }>(`/api/comments/${postId}/comments`, {
-        content,
-      });
+      const response = await axios.post<{ comment: Comment }>(
+        `${REACT_APP_API_URL}/api/comments/${postId}/comments`,
+        {
+          content,
+        }
+      );
       const newComment = response.data.comment;
       setPostComments((prevComments) => ({
         ...prevComments,
@@ -36,7 +41,7 @@ export const useComments = (initialComments: Record<string, Comment[]> = {}) => 
 
   const handleDeleteComment = async (commentId: string, postId: string) => {
     try {
-      await axios.delete(`/api/comments/${commentId}`);
+      await axios.delete(`${REACT_APP_API_URL}/api/comments/${commentId}`);
       setPostComments((prevComments) => ({
         ...prevComments,
         [postId]: (prevComments[postId] || []).filter((comment) => comment.id !== commentId),
@@ -48,9 +53,12 @@ export const useComments = (initialComments: Record<string, Comment[]> = {}) => 
 
   const handleEditComment = async (postId: string, commentId: string) => {
     try {
-      const response = await axios.put<{ comment: Comment }>(`/api/comments/${commentId}`, {
-        content: editCommentContent,
-      });
+      const response = await axios.put<{ comment: Comment }>(
+        `${REACT_APP_API_URL}/api/comments/${commentId}`,
+        {
+          content: editCommentContent,
+        }
+      );
       const updatedComment = response.data.comment;
 
       setPostComments((prevComments) => ({

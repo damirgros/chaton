@@ -19,7 +19,7 @@ const Profile: React.FC<ProfileProps> = ({ user }) => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axios.get(`/api/user/${user.id}`);
+        const response = await axios.get(`${REACT_APP_API_URL}/api/user/${user.id}`);
         const updatedUser = response.data.user;
 
         setBio(updatedUser.bio || "");
@@ -45,11 +45,15 @@ const Profile: React.FC<ProfileProps> = ({ user }) => {
     }
 
     try {
-      const response = await axios.put(`/api/user/${user.id}/profile`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await axios.put(
+        `${REACT_APP_API_URL}/api/user/${user.id}/profile`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
       const updatedUser = response.data.user;
       setBio(updatedUser.bio);
@@ -73,7 +77,7 @@ const Profile: React.FC<ProfileProps> = ({ user }) => {
 
   const handleDeleteAccount = async () => {
     try {
-      await axios.delete(`/api/user/${user.id}`);
+      await axios.delete(`${REACT_APP_API_URL}/api/user/${user.id}`);
       navigate("/");
     } catch (err) {
       setError("Error deleting account.");
@@ -88,7 +92,7 @@ const Profile: React.FC<ProfileProps> = ({ user }) => {
         src={
           profilePicture.startsWith("http")
             ? profilePicture
-            : `http://localhost:5000${profilePicture}`
+            : `${REACT_APP_API_URL}${profilePicture}`
         }
         alt="Profile Picture"
         className={styles.profileImage}

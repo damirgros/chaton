@@ -20,7 +20,9 @@ const Follow: React.FC<FollowProps> = ({ userId }) => {
   const fetchFollowedUsers = async () => {
     try {
       setLoading(true);
-      const response = await axios.get<{ users: User[] }>(`/api/user/${userId}/followed`);
+      const response = await axios.get<{ users: User[] }>(
+        `${REACT_APP_API_URL}/api/user/${userId}/followed`
+      );
       setFollowedUsers(response.data.users);
     } catch (err) {
       setError("Failed to fetch followed users");
@@ -31,7 +33,9 @@ const Follow: React.FC<FollowProps> = ({ userId }) => {
 
   const fetchRecommendedUsers = async () => {
     try {
-      const response = await axios.get<{ users: User[] }>(`/api/user/${userId}/recommended`);
+      const response = await axios.get<{ users: User[] }>(
+        `${REACT_APP_API_URL}/api/user/${userId}/recommended`
+      );
       setRecommendedUsers(response.data.users);
     } catch (err) {
       setError("Failed to fetch recommended users");
@@ -42,9 +46,12 @@ const Follow: React.FC<FollowProps> = ({ userId }) => {
     if (!searchTerm) return;
     try {
       setLoading(true);
-      const response = await axios.get<{ users: User[] }>(`/api/user/${userId}/search`, {
-        params: { searchTerm },
-      });
+      const response = await axios.get<{ users: User[] }>(
+        `${REACT_APP_API_URL}/api/user/${userId}/search`,
+        {
+          params: { searchTerm },
+        }
+      );
       const filteredResults = response.data.users.filter((u) => u.id !== userId);
       setSearchResults(filteredResults);
     } catch (err) {
@@ -61,7 +68,7 @@ const Follow: React.FC<FollowProps> = ({ userId }) => {
     }
     try {
       setLoading(true);
-      await axios.post(`/api/user/${userId}/follow`, { userIdToFollow });
+      await axios.post(`${REACT_APP_API_URL}/api/user/${userId}/follow`, { userIdToFollow });
       setRecommendedUsers((prev) => prev.filter((u) => u.id !== userIdToFollow));
       fetchRecommendedUsers();
       fetchFollowedUsers();
@@ -79,7 +86,7 @@ const Follow: React.FC<FollowProps> = ({ userId }) => {
     }
 
     try {
-      await axios.post(`/api/user/${userId}/unfollow`, { userIdToUnfollow });
+      await axios.post(`${REACT_APP_API_URL}/api/user/${userId}/unfollow`, { userIdToUnfollow });
       setFollowedUsers((prev) => prev.filter((u) => u.id !== userIdToUnfollow));
       fetchFollowedUsers();
     } catch (err) {
@@ -118,7 +125,7 @@ const Follow: React.FC<FollowProps> = ({ userId }) => {
                     src={
                       u.profilePicture?.startsWith("http")
                         ? u.profilePicture
-                        : `http://localhost:5000${u.profilePicture}`
+                        : `${REACT_APP_API_URL}${u.profilePicture}`
                     }
                     alt="Profile Picture"
                     className={styles.userAvatar}
@@ -150,7 +157,7 @@ const Follow: React.FC<FollowProps> = ({ userId }) => {
                     src={
                       u.profilePicture?.startsWith("http")
                         ? u.profilePicture
-                        : `http://localhost:5000${u.profilePicture}`
+                        : `${REACT_APP_API_URL}${u.profilePicture}`
                     }
                     alt="Profile Picture"
                     className={styles.userAvatar}
@@ -179,7 +186,7 @@ const Follow: React.FC<FollowProps> = ({ userId }) => {
                   src={
                     u.profilePicture?.startsWith("http")
                       ? u.profilePicture
-                      : `http://localhost:5000${u.profilePicture}`
+                      : `${REACT_APP_API_URL}${u.profilePicture}`
                   }
                   alt="Profile Picture"
                   className={styles.userAvatar}

@@ -22,7 +22,7 @@ const MyPosts: React.FC<MyPostsProps> = ({
 
   const handleDelete = async (postId: string) => {
     try {
-      await axios.delete(`/api/posts/${postId}`, {
+      await axios.delete(`${REACT_APP_API_URL}/api/posts/${postId}`, {
         headers: { "x-user-id": currentUser.id === "guest" ? "guest" : "" },
       });
       onDelete(postId);
@@ -37,7 +37,7 @@ const MyPosts: React.FC<MyPostsProps> = ({
 
     try {
       await axios.put<{ post: Post }>(
-        `/api/posts/${editingPost.id}`,
+        `${REACT_APP_API_URL}/api/posts/${editingPost.id}`,
         {
           title: editTitle,
           content: editContent,
