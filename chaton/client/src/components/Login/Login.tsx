@@ -37,6 +37,7 @@ const Login: React.FC = () => {
           onChange={(e) => setEmail(e.target.value)}
           required
           className={styles.input}
+          autoComplete="off"
         />
       </div>
       <div>
@@ -49,6 +50,7 @@ const Login: React.FC = () => {
           onChange={(e) => setPassword(e.target.value)}
           required
           className={styles.input}
+          autoComplete="off"
         />
       </div>
       {error && <p className={styles.error}>{error}</p>}

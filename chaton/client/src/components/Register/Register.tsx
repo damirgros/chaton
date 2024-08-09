@@ -37,6 +37,7 @@ const Register: React.FC = () => {
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           className={styles.input}
+          autoComplete="off"
         />
       </div>
       <div>
@@ -49,6 +50,7 @@ const Register: React.FC = () => {
           onChange={(e) => setEmail(e.target.value)}
           required
           className={styles.input}
+          autoComplete="off"
         />
       </div>
       <div>
@@ -61,6 +63,7 @@ const Register: React.FC = () => {
           onChange={(e) => setPassword(e.target.value)}
           required
           className={styles.input}
+          autoComplete="off"
         />
       </div>
 
