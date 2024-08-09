@@ -32,6 +32,8 @@ const Register: React.FC = () => {
         <input
           type="text"
           placeholder="Username"
+          name="username"
+          id="username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           className={styles.input}
@@ -41,6 +43,8 @@ const Register: React.FC = () => {
         <input
           type="email"
           placeholder="Email"
+          name="email"
+          id="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
@@ -51,6 +55,8 @@ const Register: React.FC = () => {
         <input
           type="password"
           placeholder="Password"
+          name="password"
+          id="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
