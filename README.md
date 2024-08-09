@@ -1,6 +1,6 @@
 # ChatON - A Social Media Website
 
-Welcome to chatON, a social media platform that allows users to connect, share posts, and engage with the community. This README provides an overview of the project, setup instructions, and details about the various components of the application.
+Welcome to chatON, a social media platform that allows users to connect, share posts, and engage with the community. This README provides an overview of the project, and details about the various components of the application.
 
 ## Table of Contents
 
