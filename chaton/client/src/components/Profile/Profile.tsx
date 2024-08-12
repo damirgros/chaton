@@ -59,6 +59,8 @@ const Profile: React.FC<ProfileProps> = ({ user }) => {
       );
       setEditMode(false);
       setError(null);
+
+      navigate(0);
     } catch (err) {
       setError("Error updating profile.");
     }
