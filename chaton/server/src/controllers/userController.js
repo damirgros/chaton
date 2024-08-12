@@ -194,15 +194,49 @@ export const deleteUser = async (req, res) => {
   const { userId } = req.params;
 
   try {
-    const user = await prisma.user.findUnique({ where: { id: userId } });
+    // Start a transaction to ensure all deletions are handled atomically
+    await prisma.$transaction(async (prisma) => {
+      // 1. Delete the user's posts
+      await prisma.post.deleteMany({
+        where: { authorId: userId },
+      });
 
-    if (user.profilePicture) {
-      // Remove the profile picture file if it exists
-      fs.unlinkSync(path.join(__dirname, "..", user.profilePicture));
-    }
+      // 2. Delete the user's comments
+      await prisma.comment.deleteMany({
+        where: { authorId: userId },
+      });
 
-    await prisma.user.delete({ where: { id: userId } });
-    res.status(200).send({ message: "User deleted successfully" });
+      // 3. Delete the user's sent messages
+      await prisma.message.deleteMany({
+        where: { senderId: userId },
+      });
+
+      // 4. Delete the user's received messages
+      await prisma.message.deleteMany({
+        where: { receiverId: userId },
+      });
+
+      // 5. Delete the user's followers and followings
+      await prisma.follows.deleteMany({
+        where: {
+          OR: [{ followerId: userId }, { followingId: userId }],
+        },
+      });
+
+      // 6. Remove the user's profile picture file if it exists
+      const user = await prisma.user.findUnique({ where: { id: userId } });
+      if (user.profilePicture) {
+        const filePath = path.join(__dirname, "..", user.profilePicture);
+        if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath);
+        }
+      }
+
+      // 7. Delete the user
+      await prisma.user.delete({ where: { id: userId } });
+    });
+
+    res.status(200).send({ message: "User and all related data deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: "Internal server error", error: error.message });
   }
