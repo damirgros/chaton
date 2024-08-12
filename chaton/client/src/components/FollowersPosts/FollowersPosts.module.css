@@ -1,9 +1,8 @@
 .followersPosts {
   margin-top: 25px;
-}
-
-.posts {
-  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 }
 
 .post {

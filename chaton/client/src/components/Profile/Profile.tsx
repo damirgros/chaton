@@ -85,11 +85,7 @@ const Profile: React.FC<ProfileProps> = ({ user }) => {
       <h2 className={styles.profileTitle}>Profile</h2>
       {error && <p className={styles.error}>{error}</p>}
       <img
-        src={
-          profilePicture.startsWith("http")
-            ? profilePicture
-            : `http://localhost:5000${profilePicture}`
-        }
+        src={profilePicture}
         alt="Profile Picture"
         className={styles.profileImage}
         onError={(e) => {
