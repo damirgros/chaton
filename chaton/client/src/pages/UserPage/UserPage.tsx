@@ -19,7 +19,7 @@ const UserPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [activeSection, setActiveSection] = useState<
     "communityPosts" | "myPosts" | "chat" | "profile" | "follow" | "followersPosts"
-  >("communityPosts");
+  >("profile");
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const navigate = useNavigate();
 
@@ -90,6 +90,15 @@ const UserPage: React.FC = () => {
         </button>
         <div className={`${styles.tabs} ${isMenuOpen ? styles.show : ""}`}>
           <button
+            className={`${styles.buttonPage} ${activeSection === "profile" ? styles.active : ""}`}
+            onClick={() => {
+              setActiveSection("profile");
+              setIsMenuOpen(false);
+            }}
+          >
+            Profile
+          </button>
+          <button
             className={`${styles.buttonPage} ${
               activeSection === "communityPosts" ? styles.active : ""
             }`}
@@ -128,15 +137,6 @@ const UserPage: React.FC = () => {
             }}
           >
             Chat
-          </button>
-          <button
-            className={`${styles.buttonPage} ${activeSection === "profile" ? styles.active : ""}`}
-            onClick={() => {
-              setActiveSection("profile");
-              setIsMenuOpen(false);
-            }}
-          >
-            Profile
           </button>
           <button
             className={`${styles.buttonPage} ${activeSection === "follow" ? styles.active : ""}`}
