@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 import { Message, ChatProps, User } from "../../types/types";
 import styles from "./Chat.module.css";
 
-const socket = io("http://localhost:5000");
+const socket = io("https://chaton-server-bgsr.onrender.com");
 
 const Chat: React.FC<ChatProps> = ({ userUsername, userId }) => {
   const [message, setMessage] = useState<string>("");
