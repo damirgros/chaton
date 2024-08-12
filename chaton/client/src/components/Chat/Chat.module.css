@@ -1,6 +1,8 @@
 .chatContainer {
   display: flex;
   height: 100vh;
+  margin-top: 25px;
+  border-radius: 8px;
   width: 100%;
   background-color: #4c74bb;
 }
