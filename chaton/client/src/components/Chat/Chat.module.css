@@ -1,7 +1,11 @@
 .chatContainer {
+  margin-top: 25px;
   display: flex;
+  flex-direction: column;
+  width: 100%;
   height: 100vh;
   background-color: #4c74bb;
+  border: 1px solid #ccc;
 }
 
 .sidebar {

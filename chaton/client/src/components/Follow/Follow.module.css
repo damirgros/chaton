@@ -1,9 +1,11 @@
 .followPage {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
+  margin-top: 25px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
   background-color: #314c79;
   color: #fff;
+  border: 1px solid #ccc;
 }
 
 .followPage h2 {

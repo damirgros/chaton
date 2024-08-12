@@ -1,5 +1,8 @@
 .myPosts {
-  padding: 20px;
+  margin-top: 25px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 }
 
 .post {
