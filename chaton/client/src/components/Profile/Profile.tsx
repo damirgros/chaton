@@ -66,8 +66,9 @@ const Profile: React.FC<ProfileProps> = ({ user }) => {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      setSelectedFile(e.target.files[0]);
-      setProfilePicture(URL.createObjectURL(e.target.files[0]));
+      const file = e.target.files[0];
+      setSelectedFile(file);
+      setProfilePicture(URL.createObjectURL(file));
     }
   };
 
@@ -84,23 +85,17 @@ const Profile: React.FC<ProfileProps> = ({ user }) => {
     <div className={styles.profile}>
       <h2 className={styles.profileTitle}>Profile</h2>
       {error && <p className={styles.error}>{error}</p>}
-      <div className={styles.profileCard}>
-        <div className={styles.cardImage}>
-          <img
-            src={`https://chaton-server-bgsr.onrender.com${user.profilePicture}`}
-            alt="Profile Picture"
-            className={styles.profileImage}
-            onError={(e) => {
-              console.error(`Error loading image: ${profilePicture}`, e);
-              e.currentTarget.src = gravatar.url(user.email, { s: "200", d: "retro" }, true);
-            }}
-          />
-        </div>
-        <div className={styles.cardInfo}>
-          <p className={styles.profileText}>Username: {user.username}</p>
-          <p className={styles.profileText}>Email: {user.email}</p>
-        </div>
-      </div>
+      <img
+        src={profilePicture}
+        alt="Profile Picture"
+        className={styles.profileImage}
+        onError={(e) => {
+          console.error(`Error loading image: ${profilePicture}`, e);
+          e.currentTarget.src = gravatar.url(user.email, { s: "200", d: "retro" }, true);
+        }}
+      />
+      <p className={styles.profileText}>Username: {user.username}</p>
+      <p className={styles.profileText}>Email: {user.email}</p>
       {editMode ? (
         <div className={styles.editForm}>
           <label className={styles.formLabel}>

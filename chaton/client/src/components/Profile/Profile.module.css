@@ -7,20 +7,6 @@
   background-color: #314c79;
 }
 
-.profileCard {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-}
-
-.cardImage {
-  padding-left: 40px;
-}
-
-.cardInfo {
-  padding-right: 40px;
-}
-
 .profile h2 {
   text-align: center;
   color: white;
@@ -44,7 +30,7 @@
   display: block;
   margin: 10px 0;
   font-weight: bold;
-  color: white;
+  color: #34c294;
 }
 
 .profile input[type="text"],
