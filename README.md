@@ -7,6 +7,7 @@ Welcome to chatON, a social media platform that allows users to connect, share p
 - [Project Overview](#project-overview)
 - [Features](#features)
 - [Technologies Used](#technologies-used)
+- [Disclaimer](#disclaimer)
 
 ## Project Overview
 
@@ -37,3 +38,9 @@ ChatON is a full-featured social media application where users can register, cre
 - PostgresQL (Prisma for ODM)
 - Passport Local (for authentication)
 - Multer (for file uploads)
+
+## Disclaimer
+
+This website is using free tier of Render which comes with certain limitations. Any issues with performance of the website should take this into consideration.
+
+Link to the website https://chaton-server-bgsr.onrender.com.
