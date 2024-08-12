@@ -1,5 +1,7 @@
 .followPage {
   width: 100%;
+  margin-top: 0;
+  padding: 20px;
   background-color: #314c79;
   color: #fff;
 }
