@@ -56,7 +56,7 @@ const Login: React.FC = () => {
       {error && <p className={styles.error}>{error}</p>}
       <div className={styles.buttonBox}>
         <button className={styles.buttonLogin} type="submit" disabled={loading}>
-          Login
+          {loading ? "Loging in..." : "Login"}
         </button>
       </div>
     </form>

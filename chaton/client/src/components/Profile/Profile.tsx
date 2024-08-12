@@ -85,7 +85,7 @@ const Profile: React.FC<ProfileProps> = ({ user }) => {
       <h2 className={styles.profileTitle}>Profile</h2>
       {error && <p className={styles.error}>{error}</p>}
       <img
-        src={profilePicture}
+        src={`https://chaton-server-bgsr.onrender.com${user.profilePicture}`}
         alt="Profile Picture"
         className={styles.profileImage}
         onError={(e) => {
