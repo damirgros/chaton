@@ -7,11 +7,13 @@ const Register: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
+  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const response = await axios.post("/api/auth/register", { email, password, username });
       if (response.data.redirectUrl) {
@@ -19,6 +21,8 @@ const Register: React.FC = () => {
       }
     } catch (err) {
       setError("Registration failed");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -31,6 +35,7 @@ const Register: React.FC = () => {
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           className={styles.input}
+          disabled={loading}
         />
       </div>
       <div>
@@ -41,6 +46,7 @@ const Register: React.FC = () => {
           onChange={(e) => setEmail(e.target.value)}
           required
           className={styles.input}
+          disabled={loading}
         />
       </div>
       <div>
@@ -51,12 +57,13 @@ const Register: React.FC = () => {
           onChange={(e) => setPassword(e.target.value)}
           required
           className={styles.input}
+          disabled={loading}
         />
       </div>
 
       {error && <p className={styles.error}>{error}</p>}
       <div className={styles.buttonBox}>
-        <button className={styles.buttonRegister} type="submit">
+        <button className={styles.buttonRegister} type="submit" disabled={loading}>
           Register
         </button>
       </div>
