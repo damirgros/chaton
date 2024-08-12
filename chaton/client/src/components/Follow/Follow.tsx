@@ -139,6 +139,7 @@ const Follow: React.FC<FollowProps> = ({ userId }) => {
               ))
             )}
           </ul>
+          <hr />
           <h3>Followed Users</h3>
           <ul className={styles.userList}>
             {followedUsers.length === 0 ? (
@@ -171,6 +172,7 @@ const Follow: React.FC<FollowProps> = ({ userId }) => {
               ))
             )}
           </ul>
+          <hr />
           <h3>Recommended Users</h3>
           <ul className={styles.userList}>
             {recommendedUsers.map((u) => (
