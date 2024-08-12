@@ -115,7 +115,11 @@ const Follow: React.FC<FollowProps> = ({ userId }) => {
               searchResults.map((u) => (
                 <li key={u.id} className={styles.userItem}>
                   <img
-                    src={u.profilePicture}
+                    src={
+                      u.profilePicture?.startsWith("http")
+                        ? u.profilePicture
+                        : `https://chaton-server-bgsr.onrender.com${u.profilePicture}`
+                    }
                     alt="Profile Picture"
                     className={styles.userAvatar}
                     onError={(e) => {
@@ -143,7 +147,11 @@ const Follow: React.FC<FollowProps> = ({ userId }) => {
               followedUsers.map((u) => (
                 <li key={u.id} className={styles.userItem}>
                   <img
-                    src={u.profilePicture}
+                    src={
+                      u.profilePicture?.startsWith("http")
+                        ? u.profilePicture
+                        : `https://chaton-server-bgsr.onrender.com${u.profilePicture}`
+                    }
                     alt="Profile Picture"
                     className={styles.userAvatar}
                     onError={(e) => {
@@ -168,7 +176,11 @@ const Follow: React.FC<FollowProps> = ({ userId }) => {
             {recommendedUsers.map((u) => (
               <li key={u.id} className={styles.userItem}>
                 <img
-                  src={u.profilePicture}
+                  src={
+                    u.profilePicture?.startsWith("http")
+                      ? u.profilePicture
+                      : `https://chaton-server-bgsr.onrender.com${u.profilePicture}`
+                  }
                   alt="Profile Picture"
                   className={styles.userAvatar}
                   onError={(e) => {

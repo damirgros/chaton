@@ -166,19 +166,28 @@ export const updateUserProfile = async (req, res) => {
   let profilePicture;
 
   try {
+    // Check if a new file was uploaded
     if (req.file) {
+      // Set the new profile picture path
       profilePicture = `/uploads/${req.file.filename}`;
 
+      // Fetch the existing user
       const user = await prisma.user.findUnique({ where: { id: userId } });
 
+      // If the user exists and has an old profile picture, delete the old file
       if (user && user.profilePicture) {
         const oldFilePath = path.join(__dirname, "..", user.profilePicture);
         if (fs.existsSync(oldFilePath)) {
           fs.unlinkSync(oldFilePath);
         }
       }
+    } else {
+      // If no new file uploaded, retain the existing profile picture
+      const user = await prisma.user.findUnique({ where: { id: userId } });
+      profilePicture = user?.profilePicture;
     }
 
+    // Update the user's profile
     const updatedUser = await prisma.user.update({
       where: { id: userId },
       data: { bio, location, profilePicture },
