@@ -23,5 +23,11 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src/pages/UserPage", "src/components", "src/types", "src/customHooks"]
+  "include": [
+    "src/pages/UserPage",
+    "src/pages/NotFound",
+    "src/components",
+    "src/types",
+    "src/customHooks"
+  ]
 }
