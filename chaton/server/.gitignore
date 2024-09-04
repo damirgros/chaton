@@ -26,5 +26,3 @@ build/
 # Temporary files
 tmp/
 
-# Exclude seed script
-seed.js
